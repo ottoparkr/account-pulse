@@ -1311,6 +1311,87 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         line-height: 1.4;
         color: var(--fg2);
       }
+      .budget-card {
+        margin-top: 12px;
+        padding: 12px 14px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+      .budget-title-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 11px;
+      }
+      .budget-period {
+        font-size: 10px;
+        color: var(--fg2);
+        margin-top: 5px;
+        line-height: 1.5;
+      }
+      .budget-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 14px 0 10px;
+      }
+      .budget-stats span {
+        display: block;
+        font-size: 10px;
+        color: var(--fg2);
+        margin-bottom: 3px;
+      }
+      .budget-stats strong,
+      .budget-proposal-amount {
+        font-size: 17px;
+        font-weight: 600;
+      }
+      .budget-proposal-amount {
+        margin-top: 10px;
+      }
+      .budget-fill {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+      .budget-over-fill {
+        background: var(--risk);
+      }
+      .budget-over {
+        color: var(--risk);
+      }
+      .budget-pacing,
+      .budget-note,
+      .approval-details {
+        font-size: 10px;
+        line-height: 1.5;
+        color: var(--fg2);
+        margin-top: 7px;
+      }
+      .budget-pacing {
+        color: var(--fg);
+      }
+      .approval-details summary {
+        cursor: pointer;
+      }
+      .approval-details p {
+        margin-top: 5px;
+      }
+      .approved-expansion {
+        border-top: 1px solid var(--border);
+        margin-top: 10px;
+        padding-top: 10px;
+        color: var(--opp);
+      }
+      .approved-expansion p {
+        font-size: 10px;
+        line-height: 1.5;
+        margin-top: 5px;
+        color: var(--fg2);
+      }
       .email-field-label {
         display: block;
       }
@@ -1392,7 +1473,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           description:
             "Trip planning and boutique stays · Summer discovery pilot",
           status: "Active",
-          tags: ["Scale opportunity"],
+          tags: ["Scale opportunity", "Spend opportunity"],
           contactName: "Maya Chen",
           contactRole: "VP Growth",
           contactEmail: "maya@northstar.example",
@@ -1423,6 +1504,22 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Share the booking reconciliation before asking to scale.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Monthly",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Maya Chen",
+            approvedOn: "2026-08-28",
+          },
+          upsellProposal: {
+            amount: 20000,
+            period: "Current monthly period",
+            rationale:
+              "Booking CPA is below goal, and two approved creative variants could support a controlled expansion.",
+            gate: "Reconcile the booking count and obtain Maya’s written approval before adding the proposed $20K to this month’s budget.",
+          },
         },
         {
           id: "haven",
@@ -1461,6 +1558,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Ask for approved product claims before drafting a refresh.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Monthly",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Alex Morgan",
+            approvedOn: "2026-08-28",
+          },
         },
         {
           id: "trail",
@@ -1492,6 +1598,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Separate the existing pilot result from the untested launch forecast.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Jordan Lee",
+            approvedOn: "2026-08-28",
+          },
         },
         {
           id: "ledger",
@@ -1531,6 +1646,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Agree exclusions and attribution window together.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Priya Shah",
+            approvedOn: "2026-08-28",
+          },
         },
         {
           id: "bloom",
@@ -1538,7 +1662,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           vertical: "Beauty",
           description: "Skincare and cosmetics · New customer acquisition",
           status: "Active",
-          tags: ["Scale opportunity"],
+          tags: ["Scale opportunity", "Approved expansion"],
           contactName: "Nina Patel",
           contactRole: "Growth Marketing Director",
           contactEmail: "nina@bloom.example",
@@ -1552,7 +1676,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           campaigns: 3,
           renewal: "Monthly review in 6 days",
           context:
-            "Nina is ready to test more budget if first-purchase economics hold. Creative must stay aligned with approved product claims; do not promise unverified outcomes.",
+            "Nina approved an additional $15K for the current month, increasing the agreed budget from $45K to $60K effective September 17. Keep the $35 first-purchase CPA goal and review cohort quality before requesting another increase.",
           stakeholders: [
             [
               "Nina Patel",
@@ -1562,6 +1686,23 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Propose a controlled increase with a stop rule.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Monthly",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Nina Patel",
+            approvedOn: "2026-08-28",
+          },
+          approvedExpansion: {
+            status: "Approved",
+            amount: 15000,
+            approvedBy: "Nina Patel",
+            approvedOn: "2026-09-16",
+            effectiveOn: "2026-09-17",
+            note: "A bounded expansion of the existing first-purchase campaign, within the current monthly period.",
+          },
         },
         {
           id: "atlas",
@@ -1593,6 +1734,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Send a concise baseline readout before the first review.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Monthly",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Chris Park",
+            approvedOn: "2026-08-28",
+          },
         },
         {
           id: "roam",
@@ -1609,7 +1759,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           budget: 25000,
           conversions: 0,
           cpaGoal: 75,
-          daysElapsed: 18,
+          daysElapsed: 0,
           periodDays: 30,
           objective: "Paid subscriptions",
           campaigns: 0,
@@ -1625,6 +1775,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Use a readiness checklist rather than a delivery promise.",
             ],
           ],
+          budgetAgreement: {
+            status: "Proposed",
+            kind: "Starter test",
+            start: "2026-09-22",
+            end: "2026-10-21",
+            snapshot: "2026-09-18",
+            approvedBy: null,
+            approvedOn: null,
+          },
         },
         {
           id: "fresh",
@@ -1657,6 +1816,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Include an offer cohort and repeat-order check in the review.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-01",
+            end: "2026-09-30",
+            snapshot: "2026-09-18",
+            approvedBy: "Morgan Diaz",
+            approvedOn: "2026-08-28",
+          },
         },
         {
           id: "aurora",
@@ -1673,7 +1841,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           budget: 5000,
           conversions: 0,
           cpaGoal: 110,
-          daysElapsed: 18,
+          daysElapsed: 0,
           periodDays: 30,
           objective: "Qualified trials",
           campaigns: 0,
@@ -1706,6 +1874,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Ask what incremental media budget is actually available; do not quote a percentage of the raise.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-19",
+            end: "2026-10-18",
+            snapshot: "2026-09-18",
+            approvedBy: "Owen Brooks",
+            approvedOn: "2026-09-17",
+          },
         },
         {
           id: "solace",
@@ -1722,7 +1899,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           budget: 6000,
           conversions: 8,
           cpaGoal: 55,
-          daysElapsed: 18,
+          daysElapsed: 5,
           periodDays: 30,
           objective: "First purchases",
           campaigns: 1,
@@ -1755,6 +1932,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Request the final claims sheet before drafting launch creative.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-14",
+            end: "2026-10-13",
+            snapshot: "2026-09-18",
+            approvedBy: "Imani Reed",
+            approvedOn: "2026-09-13",
+          },
         },
         {
           id: "juniper",
@@ -1770,7 +1956,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           budget: 8000,
           conversions: 20,
           cpaGoal: 65,
-          daysElapsed: 18,
+          daysElapsed: 4,
           periodDays: 30,
           objective: "First orders",
           campaigns: 1,
@@ -1803,6 +1989,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Validate coverage and capacity with Operations before recommending launch scope.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-15",
+            end: "2026-10-14",
+            snapshot: "2026-09-18",
+            approvedBy: "Rafael Torres",
+            approvedOn: "2026-09-13",
+          },
         },
         {
           id: "summit",
@@ -1819,7 +2014,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           budget: 4000,
           conversions: 0,
           cpaGoal: 80,
-          daysElapsed: 18,
+          daysElapsed: 0,
           periodDays: 30,
           objective: "Completed bookings",
           campaigns: 0,
@@ -1852,6 +2047,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               "Confirm the live supply and landing-page coverage.",
             ],
           ],
+          budgetAgreement: {
+            status: "Approved",
+            kind: "Starter test",
+            start: "2026-09-20",
+            end: "2026-10-19",
+            snapshot: "2026-09-18",
+            approvedBy: "Avery Shah",
+            approvedOn: "2026-09-18",
+          },
         },
       ];
       const signals = [
@@ -2072,8 +2276,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           urgency: "Medium",
           age: 3,
           description:
-            "Spend is exactly on the monthly budget pace at $27K of $45K. Nina is open to a bounded test increase if first-purchase CPA stays within goal.",
-          source: "Sample budget sheet",
+            "Nina approved a $15K expansion effective September 17. The current monthly budget is $60K ($45K original + $15K approved increase). Spend is $27K, leaving $33K available in this period.",
+          source: "Sample budget approval",
         },
         {
           id: "s21",
@@ -2416,6 +2620,17 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             "The completed-booking event and cancellation exclusions have not been approved. Establish one reporting definition before launch or budget expansion.",
           source: "Sample conversion audit",
         },
+        {
+          id: "s52",
+          accountId: "northstar",
+          type: "Budget",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 1,
+          source: "Sample AM proposal",
+          description:
+            "A potential $20K increase is proposed for the current month. The approved budget remains $60K until Maya confirms the increase; reconcile the booking count before taking the proposal to Finance.",
+        },
       ];
       const {
         createElement: h,
@@ -2463,8 +2678,31 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           .map((w) => w[0])
           .join("");
       const cpa = (a) => (a.conversions > 0 ? a.spend / a.conversions : null);
+      const dateLabel = (date) =>
+        new Date(date + "T12:00:00Z").toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          timeZone: "UTC",
+        });
+      const expansionIncluded = (a) => {
+        const e = a.approvedExpansion;
+        return (
+          !!e &&
+          e.status === "Approved" &&
+          e.effectiveOn <= a.budgetAgreement.snapshot &&
+          e.effectiveOn >= a.budgetAgreement.start &&
+          e.effectiveOn <= a.budgetAgreement.end
+        );
+      };
+      const approvedBudget = (a) =>
+        a.budgetAgreement.status === "Approved"
+          ? a.budget + (expansionIncluded(a) ? a.approvedExpansion.amount : 0)
+          : null;
       const projected = (a) =>
-        a.status === "Planning" || a.onboardedDays <= 7
+        approvedBudget(a) === null ||
+        a.daysElapsed === 0 ||
+        a.onboardedDays <= 7
           ? null
           : (a.spend / a.daysElapsed) * a.periodDays;
       const urgencyClass = (u) =>
@@ -2617,7 +2855,17 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             : lead;
         const angle = a.spendOpportunity
           ? primaryAngle + " Readiness gate: " + a.spendOpportunity.gate
-          : primaryAngle;
+          : a.upsellProposal
+            ? primaryAngle + " Before expansion: " + a.upsellProposal.gate
+            : expansionIncluded(a) &&
+                list.length === 1 &&
+                list[0].type === "Budget"
+              ? "Execute the approved " +
+                money(a.approvedExpansion.amount) +
+                " expansion within the current " +
+                money(approvedBudget(a)) +
+                " budget. Review CPA and outcome quality at the agreed checkpoint before proposing any further increase."
+              : primaryAngle;
         const steps = [
           ...new Set([
             ...list.flatMap((s) => PLAYBOOK[s.type].steps),
@@ -2641,7 +2889,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           a.name;
         const opportunity = a.spendOpportunity
           ? `\n\nOnce those readiness checks are complete, we could discuss a ${money(a.spendOpportunity.low)}–${money(a.spendOpportunity.high)} next 30-day test budget. This is a proposal to validate with you, not an approved allocation or a performance forecast. Your current starter budget is ${money(a.budget)}.`
-          : "";
+          : a.upsellProposal
+            ? `\n\nAfter the readiness checks, we could discuss an additional ${money(a.upsellProposal.amount)} for this period. Your approved budget currently remains ${money(approvedBudget(a))}; it would become ${money(approvedBudget(a) + a.upsellProposal.amount)} only if you approve that increase. ${a.upsellProposal.gate}`
+            : "";
         const onboarding =
           a.onboardedDays != null
             ? ` You onboarded ${a.onboardedDays} day${a.onboardedDays === 1 ? "" : "s"} ago, so we should treat any initial campaign results as preliminary.`
@@ -2656,6 +2906,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           "All",
           "Newly onboarded",
           "Spend opportunity",
+          "Approved expansion",
           "Active",
           "Pilot",
           "Planning",
@@ -2777,72 +3028,235 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         );
       }
       function BudgetBar({ account: a }) {
-        const pct = Math.round((a.spend / a.budget) * 100),
-          projection = projected(a);
-        const pace =
-          projection === null
-            ? "pace-warn"
-            : projection > a.budget * 1.05
-              ? "pace-risk"
-              : projection < a.budget * 0.85
-                ? "pace-warn"
-                : "pace-ok";
+        const agreement = a.budgetAgreement;
+        const total = approvedBudget(a);
+        const monthly = agreement.kind === "Monthly";
+        const period =
+          dateLabel(agreement.start) + " – " + dateLabel(agreement.end);
+        if (total === null) {
+          return h(
+            "div",
+            { className: "budget-card budget-unapproved" },
+            h(
+              "div",
+              { className: "budget-title-row" },
+              h("strong", null, "Proposed starter-test budget"),
+              badge("Awaiting approval", "badge-prospect"),
+            ),
+            h("div", { className: "budget-period" }, period),
+            h("div", { className: "budget-proposal-amount" }, money(a.budget)),
+            h(
+              "p",
+              { className: "budget-note" },
+              "This proposal is not committed spend. The budget-consumption bar appears after the advertiser approves it.",
+            ),
+          );
+        }
+        const pct = Math.round((a.spend / total) * 100);
+        const remaining = Math.max(0, total - a.spend);
+        const over = Math.max(0, a.spend - total);
+        const expansion = expansionIncluded(a) ? a.approvedExpansion : null;
+        const early = a.onboardedDays != null && a.onboardedDays <= 7;
+        const expected = (total * a.daysElapsed) / a.periodDays;
+        const delta = a.spend - expected;
+        const projection = projected(a);
+        let pacing;
+        if (a.daysElapsed === 0)
+          pacing = "Test has not started · First campaign pending";
+        else if (early)
+          pacing = "Early test data · No end-of-period projection yet";
+        else
+          pacing =
+            "Linear reference using the current budget: " +
+            money(expected) +
+            " by day " +
+            a.daysElapsed +
+            " of " +
+            a.periodDays +
+            " · " +
+            money(Math.abs(delta)) +
+            (delta >= 0 ? " ahead" : " behind") +
+            " of that reference";
         return h(
           "div",
-          { className: "contract-bar-wrap" },
+          { className: "budget-card" },
+          h(
+            "div",
+            { className: "budget-title-row" },
+            h(
+              "strong",
+              null,
+              monthly
+                ? "Spend against approved monthly budget"
+                : "Spend against approved starter-test budget",
+            ),
+            badge("Approved", "badge-client"),
+          ),
+          h(
+            "div",
+            { className: "budget-period" },
+            period + " · Sample snapshot " + dateLabel(agreement.snapshot),
+          ),
+          h(
+            "div",
+            { className: "budget-stats" },
+            h(
+              "div",
+              null,
+              h("span", null, "Spent"),
+              h("strong", { className: "budget-spent" }, money(a.spend)),
+            ),
+            h(
+              "div",
+              null,
+              h("span", null, "Approved budget"),
+              h("strong", { className: "budget-approved" }, money(total)),
+            ),
+            h(
+              "div",
+              null,
+              h("span", null, over ? "Over budget" : "Remaining"),
+              h(
+                "strong",
+                {
+                  className: "budget-remaining" + (over ? " budget-over" : ""),
+                },
+                money(over || remaining),
+              ),
+            ),
+          ),
           h(
             "div",
             { className: "contract-header" },
-            h(
-              "span",
-              null,
-              (a.status === "Planning"
-                ? "Proposed budget: "
-                : a.onboardedDays != null
-                  ? "Starter test spend: "
-                  : "Month-to-date spend: ") +
-                money(a.spend) +
-                " / " +
-                money(a.budget),
-            ),
-            h("span", null, pct + "%"),
+            h("span", null, "Budget consumed"),
+            h("span", { className: "budget-percent" }, pct + "%"),
           ),
           h(
             "div",
-            { className: "contract-bar" },
+            {
+              className: "contract-bar",
+              role: "progressbar",
+              "aria-label": "Approved budget consumed",
+              "aria-valuemin": 0,
+              "aria-valuemax": 100,
+              "aria-valuenow": Math.min(100, pct),
+              "aria-valuetext":
+                money(a.spend) +
+                " spent of " +
+                money(total) +
+                " approved (" +
+                pct +
+                "%)",
+            },
             h("div", {
-              className: "contract-fill " + pace,
+              className: "budget-fill" + (over ? " budget-over-fill" : ""),
               style: { width: Math.min(100, pct) + "%" },
             }),
           ),
+          h("p", { className: "budget-pacing" }, pacing),
+          projection !== null &&
+            h(
+              "p",
+              { className: "budget-note" },
+              "At the current average rate: " +
+                money(projection) +
+                " by period end. This estimate does not change the approved budget.",
+            ),
+          expansion &&
+            h(
+              "div",
+              { className: "approved-expansion" },
+              h(
+                "div",
+                { className: "budget-title-row" },
+                h("strong", null, "Approved expansion"),
+                badge("+" + money(expansion.amount), "badge-client"),
+              ),
+              h(
+                "p",
+                null,
+                money(a.budget) +
+                  " original + " +
+                  money(expansion.amount) +
+                  " approved increase = " +
+                  money(total) +
+                  " current budget",
+              ),
+              h(
+                "p",
+                null,
+                "Approved by " +
+                  expansion.approvedBy +
+                  " on " +
+                  dateLabel(expansion.approvedOn) +
+                  " · Effective " +
+                  dateLabel(expansion.effectiveOn),
+              ),
+            ),
           h(
-            "div",
-            { className: "contract-renewal" },
-            projection === null
-              ? a.onboardedDays != null
-                ? "Onboarded " +
-                  a.onboardedDays +
-                  " day" +
-                  (a.onboardedDays === 1 ? "" : "s") +
-                  " ago · " +
-                  (a.spend > 0
-                    ? "Early data; no monthly projection"
-                    : "First campaign pending") +
-                  " · " +
-                  a.renewal
-                : "Not launched · " + a.renewal
-              : "Day " +
-                  a.daysElapsed +
-                  " of " +
-                  a.periodDays +
-                  " · At current average pace: " +
-                  money(projection) +
-                  " · " +
-                  a.renewal,
+            "details",
+            { className: "approval-details" },
+            h("summary", null, "Budget approval details"),
+            h(
+              "p",
+              null,
+              "Original budget " +
+                money(a.budget) +
+                " approved by " +
+                agreement.approvedBy +
+                " on " +
+                dateLabel(agreement.approvedOn) +
+                ".",
+            ),
           ),
         );
       }
+      function UpsellProposal({ account: a }) {
+        const proposal = a.upsellProposal;
+        const total = approvedBudget(a);
+        return h(
+          "div",
+          { className: "opportunity-card" },
+          h(
+            "div",
+            { className: "opportunity-kicker" },
+            "Potential incremental spend · " + proposal.period,
+          ),
+          h(
+            "div",
+            { className: "opportunity-value" },
+            "+" + money(proposal.amount),
+            h(
+              "span",
+              { className: "badge badge-prospect", style: { marginLeft: 8 } },
+              "Proposed; not approved",
+            ),
+          ),
+          h("p", { className: "opportunity-summary" }, proposal.rationale),
+          h(
+            "p",
+            { className: "opportunity-gate" },
+            "Before approval: " + proposal.gate,
+          ),
+          h(
+            "p",
+            { className: "opportunity-summary" },
+            "Current approved budget stays at " +
+              money(total) +
+              ". If approved for this period, the total would become " +
+              money(total + proposal.amount) +
+              ".",
+          ),
+          h(
+            "p",
+            { className: "opportunity-footnote" },
+            "This proposed increase is excluded from the consumption bar and remaining budget.",
+          ),
+        );
+      }
+
       function SpendOpportunity({ account: a }) {
+        if (a.upsellProposal) return h(UpsellProposal, { account: a });
         if (!a.spendOpportunity) return null;
         const opportunity = a.spendOpportunity;
         return h(
@@ -2851,7 +3265,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           h(
             "div",
             { className: "opportunity-kicker" },
-            "Spend opportunity · " + opportunity.horizon,
+            "Proposed next-test budget · " + opportunity.horizon,
           ),
           h(
             "div",
@@ -2864,6 +3278,13 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             ),
           ),
           h("p", { className: "opportunity-summary" }, opportunity.drivers),
+          h(
+            "p",
+            { className: "opportunity-summary" },
+            "Total budget proposed for a separate future test. The current approved starter budget remains " +
+              money(approvedBudget(a)) +
+              ".",
+          ),
           h(
             "p",
             { className: "opportunity-summary" },
@@ -2939,7 +3360,18 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             h(
               "div",
               { className: "stats-row" },
-              tile("Spend MTD", money(a.spend), "💰"),
+              tile(
+                a.budgetAgreement.kind === "Monthly"
+                  ? "Spend MTD"
+                  : "Test spend",
+                money(a.spend),
+                "💰",
+              ),
+              tile(
+                "Approved budget",
+                approvedBudget(a) === null ? "—" : money(approvedBudget(a)),
+                "◎",
+              ),
               tile(a.objective, String(a.conversions), "↗"),
               tile(
                 a.onboardedDays != null ? "CPA (early)" : "CPA",
@@ -2954,7 +3386,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             h(
               "div",
               { className: "feed-contact" },
-              "Sample monthly snapshot · Outcomes reflect each advertiser’s stated objective.",
+              "Sample data · Budget consumed measures spend; review CPA and outcome quality alongside it.",
             ),
           ),
           h(

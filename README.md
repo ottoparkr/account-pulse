@@ -5,7 +5,8 @@ A concept dashboard for an account manager overseeing multiple ChatGPT advertise
 ## Explore the prototype
 
 - Search twelve fictional advertisers and filter by status or account priority, including **Newly onboarded** and **Spend opportunity**.
-- Review monthly spend, outcome counts, CPA goals, and budget pacing.
+- Review spend against the approved monthly or starter-test budget, with explicit period dates, spent/remaining amounts, approval details, and pacing. Unapproved proposals show no consumption bar.
+- Compare Northstar's proposed $20K incremental upsell (excluded from its $60K approved budget) with Bloom's approved $15K expansion ($45K original + $15K approved = $60K current budget).
 - Filter sample signals across onboarding, funding, company growth, hiring, performance, budget, creative, measurement, launches, relationships, and competition.
 - Explore four newly onboarded accounts with funding announcements, launch and expansion plans, proposed next-test budgets, and account-specific readiness checks.
 - Generate a signal-specific action plan and editable advertiser email, or combine multiple signals into one plan.
@@ -14,6 +15,8 @@ A concept dashboard for an account manager overseeing multiple ChatGPT advertise
 All advertiser records, metrics, and reporting inputs are sample data. This is an independent concept, with no live ChatGPT advertising integration. Email addresses use the reserved `.example` domain; replace them before sending.
 
 Spend-opportunity ranges are illustrative proposals, not approved budgets or performance forecasts. Funding and company-growth signals support discovery; they do not establish available advertising allocation. Newly onboarded accounts label CPA as early and omit monthly projections during their first seven days.
+
+The budget cards use dated sample periods and a sample snapshot of September 18, 2026. Only approved increases effective in the current period are included in the budget denominator. Next-test proposals refer to a separate future period. Budget consumed measures spending rather than campaign success; review CPA and outcome quality alongside it.
 
 ## Run it
 
