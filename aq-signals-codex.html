@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AQ Account Pulse — Customer Intelligence</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<style>
+:root {
+  --bg: #1c2033;
+  --bg2: #232740;
+  --bg3: #2a2f4a;
+  --bg4: #30365a;
+  --fg: #f0f2ff;
+  --fg2: #a0a8cc;
+  --border: #353d60;
+  --primary: #f5bc42;
+  --primary-fg: #1c2033;
+  --risk: #e05555;
+  --risk-light: rgba(224,85,85,0.15);
+  --opp: #3dba7e;
+  --opp-light: rgba(61,186,126,0.15);
+  --urg-h: #e05555;
+  --urg-m: #f5bc42;
+  --urg-l: #5a6a99;
+  --radius: 6px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; font-size: 14px; height: 100vh; overflow: hidden; }
+button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
+input, textarea { font: inherit; color: inherit; background: none; outline: none; }
+a { color: var(--primary); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+/* Layout */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 272px; min-width: 272px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; }
+.sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 32px; height: 32px; border-radius: var(--radius); background: var(--primary); display: flex; align-items: center; justify-content: center; color: var(--primary-fg); font-size: 16px; flex-shrink: 0; }
+.logo-text { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+.logo-sub { font-size: 10px; color: var(--fg2); margin-top: -1px; }
+.search-wrap { padding: 12px; }
+.search-input { width: 100%; padding: 7px 10px 7px 28px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); font-size: 13px; color: var(--fg); position: relative; }
+.search-wrap { position: relative; padding: 12px; }
+.search-wrap .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: var(--fg2); font-size: 12px; pointer-events: none; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px 12px; }
+.chip { font-size: 10px; padding: 3px 8px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--fg2); transition: all 0.15s; }
+.chip:hover { color: var(--fg); background: var(--bg3); }
+.chip.active { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.account-list { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+.account-btn { width: 100%; text-align: left; padding: 10px 16px; border-left: 2px solid transparent; transition: all 0.15s; display: flex; align-items: flex-start; gap: 8px; }
+.account-btn:hover { background: rgba(255,255,255,0.04); }
+.account-btn.active { background: var(--bg3); border-left-color: var(--primary); }
+.account-avatar { width: 32px; height: 32px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--primary); flex-shrink: 0; }
+.account-name { font-size: 13px; font-weight: 500; }
+.account-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+.badge { font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 500; }
+.badge-client { background: var(--opp-light); color: var(--opp); }
+.badge-prospect { background: rgba(245,188,66,0.15); color: var(--primary); }
+.badge-churn { background: var(--risk-light); color: var(--risk); }
+.badge-muted { background: rgba(255,255,255,0.07); color: var(--fg2); }
+.badge-high { background: rgba(224,85,85,0.2); color: var(--urg-h); font-weight: 700; }
+.acct-name-row { display: flex; align-items: center; gap: 6px; }
+
+/* Middle feed */
+.feed { flex: 1; min-width: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: var(--bg); }
+.feed-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); }
+.feed-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.feed-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.feed-description { font-size: 12px; color: var(--fg2); margin-top: 4px; }
+.feed-contact { font-size: 11px; color: var(--fg2); margin-top: 4px; }
+.feed-contact strong { color: var(--fg); }
+.stats-row { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.stat-tile { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); font-size: 11px; }
+.stat-tile.high { border-color: rgba(224,85,85,0.4); }
+.stat-icon { font-size: 12px; color: var(--fg2); }
+.stat-icon.high { color: var(--urg-h); }
+.stat-label { color: var(--fg2); }
+.stat-val { font-size: 12px; font-weight: 600; }
+.stat-val.high { color: var(--urg-h); }
+.filter-bar { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 24px; border-bottom: 1px solid var(--border); overflow: hidden; }
+.filter-btn { font-size: 10px; padding: 4px 10px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--fg2); transition: all 0.15s; flex-shrink: 0; }
+.filter-btn:hover { color: var(--fg); background: var(--bg2); }
+.filter-btn.active { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.signal-list { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+.signal-card { border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); padding: 14px 16px; transition: all 0.15s; }
+.signal-card:hover { border-color: rgba(255,255,255,0.15); background: var(--bg3); }
+.signal-card.active { border-color: rgba(245,188,66,0.5); background: var(--bg3); }
+.sig-top { display: flex; align-items: flex-start; gap: 12px; }
+.sig-icon { width: 36px; height: 36px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.sig-content { flex: 1; min-width: 0; }
+.sig-meta { font-size: 10px; color: var(--fg2); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.sig-meta .sig-type { font-weight: 600; color: var(--fg); }
+.sig-desc { font-size: 12px; color: rgba(240,242,255,0.9); margin-top: 5px; line-height: 1.55; }
+.sig-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 8px; }
+.sig-badges { display: flex; align-items: center; gap: 5px; }
+.badge-risk { background: var(--risk-light); color: var(--risk); font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 500; }
+.badge-opp { background: var(--opp-light); color: var(--opp); font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 500; }
+.badge-urgency { font-size: 10px; padding: 1px 6px; border-radius: 4px; border: 1px solid; font-weight: 500; }
+.badge-urg-h { color: var(--urg-h); border-color: rgba(224,85,85,0.4); background: rgba(224,85,85,0.1); }
+.badge-urg-m { color: var(--urg-m); border-color: rgba(245,188,66,0.4); background: rgba(245,188,66,0.1); }
+.badge-urg-l { color: var(--urg-l); border-color: rgba(90,106,153,0.4); background: rgba(90,106,153,0.1); }
+.sig-actions { display: flex; align-items: center; gap: 5px; }
+.outreach-btn { font-size: 10px; padding: 4px 10px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--fg2); transition: all 0.15s; }
+.outreach-btn:hover { color: var(--primary); border-color: rgba(245,188,66,0.5); }
+.checkbox-wrap { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--fg2); }
+.checkbox-wrap input[type=checkbox] { cursor: pointer; accent-color: var(--primary); }
+.feed-empty { text-align: center; color: var(--fg2); padding: 48px 0; font-size: 13px; }
+.multi-btn-row { padding: 10px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+.multi-btn { font-size: 12px; padding: 6px 14px; border-radius: var(--radius); background: var(--primary); color: var(--primary-fg); font-weight: 600; transition: opacity 0.15s; }
+.multi-btn:hover { opacity: 0.85; }
+
+/* Contract bar */
+.contract-bar-wrap { margin-top: 12px; }
+.contract-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--fg2); margin-bottom: 4px; }
+.contract-bar { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.contract-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
+.contract-fill.pace-ok { background: var(--opp); }
+.contract-fill.pace-warn { background: var(--urg-m); }
+.contract-fill.pace-risk { background: var(--risk); }
+.contract-renewal { font-size: 10px; color: var(--fg2); margin-top: 3px; }
+
+/* Empty state */
+.empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--fg2); gap: 8px; }
+.empty-logo { width: 48px; height: 48px; border-radius: 12px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--primary-fg); }
+.empty-title { font-size: 15px; font-weight: 600; color: var(--fg); }
+.empty-sub { font-size: 13px; }
+
+/* Right panel */
+.panel { width: 380px; min-width: 380px; background: var(--bg2); border-left: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.panel-title-sub { font-size: 11px; color: var(--fg2); }
+.panel-title { font-size: 13px; font-weight: 600; }
+.panel-actions { display: flex; align-items: center; gap: 2px; }
+.icon-btn { width: 28px; height: 28px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--fg2); transition: all 0.15s; font-size: 14px; }
+.icon-btn:hover { color: var(--fg); background: var(--bg3); }
+.panel-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 20px; }
+
+/* Outreach panel sections */
+.section-title-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.section-icon { font-size: 12px; color: var(--primary); }
+.section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--fg2); }
+.signal-preview { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; }
+.signal-preview-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--fg2); margin-bottom: 4px; }
+.signal-preview-meta strong { color: var(--fg); }
+.signal-preview p { font-size: 11px; color: rgba(240,242,255,0.8); line-height: 1.5; }
+.angle-text { font-size: 12px; line-height: 1.6; color: rgba(240,242,255,0.9); }
+.email-field-label { font-size: 10px; color: var(--fg2); margin-bottom: 4px; }
+.email-input { width: 100%; background: transparent; font-size: 12px; border: 0; border-bottom: 1px solid transparent; padding: 4px 0; transition: border-color 0.15s; }
+.email-input:focus { border-bottom-color: rgba(245,188,66,0.5); outline: none; }
+.email-body { width: 100%; background: transparent; font-size: 11px; line-height: 1.6; border: 1px solid transparent; border-radius: var(--radius); padding: 8px; resize: none; transition: border-color 0.15s; min-height: 180px; white-space: pre-wrap; }
+.email-body:focus { border-color: rgba(245,188,66,0.5); outline: none; }
+.email-field-label { margin-top: 10px; }
+.email-field-label:first-child { margin-top: 0; }
+.btn-row { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.btn-primary { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: var(--radius); background: var(--primary); color: var(--primary-fg); transition: opacity 0.15s; text-decoration: none; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-secondary { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--fg); transition: all 0.15s; }
+.btn-secondary:hover { border-color: rgba(245,188,66,0.5); color: var(--primary); }
+.talking-pts { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.talking-pts li { display: flex; gap: 8px; font-size: 12px; line-height: 1.55; color: rgba(240,242,255,0.9); }
+.talking-pts li .dot { color: var(--primary); margin-top: 1px; flex-shrink: 0; }
+.value-props { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.value-props li { display: flex; gap: 6px; font-size: 11px; color: var(--fg2); line-height: 1.5; }
+.value-props li .arrow { color: var(--primary); flex-shrink: 0; }
+
+/* Intel panel */
+.poc-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.poc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.poc-name { font-size: 13px; font-weight: 600; }
+.poc-role { font-size: 11px; color: var(--fg2); margin-top: 1px; }
+.poc-tenure { font-size: 10px; color: var(--fg2); }
+.sentiment-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid; font-weight: 500; flex-shrink: 0; }
+.sentiment-warm { color: #3dba7e; border-color: rgba(61,186,126,0.3); background: rgba(61,186,126,0.1); }
+.sentiment-neutral { color: var(--fg2); border-color: var(--border); background: rgba(255,255,255,0.04); }
+.sentiment-cooling { color: #f5bc42; border-color: rgba(245,188,66,0.3); background: rgba(245,188,66,0.1); }
+.poc-lines { display: flex; flex-direction: column; gap: 5px; font-size: 11px; line-height: 1.5; }
+.poc-line { color: rgba(240,242,255,0.8); }
+.poc-line strong { color: var(--fg); }
+.poc-quote { border-left: 2px solid rgba(245,188,66,0.5); padding: 3px 8px; font-style: italic; color: rgba(240,242,255,0.85); font-size: 11px; }
+.dynamics-box { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; font-size: 11px; line-height: 1.6; color: rgba(240,242,255,0.85); }
+.integration-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; }
+.int-left { display: flex; align-items: center; gap: 8px; }
+.int-name { font-size: 12px; font-weight: 500; }
+.int-sync { font-size: 10px; color: var(--fg2); }
+.int-connected { font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(61,186,126,0.4); background: rgba(61,186,126,0.1); color: #3dba7e; font-weight: 500; }
+.intel-section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg2); font-weight: 600; margin-bottom: 8px; }
+.intel-section { display: flex; flex-direction: column; gap: 8px; }
+
+/* Scrollbar for panel */
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: #333; }
+
+/* Fade-in */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fadeIn 0.15s ease-out; }
+
+/* Intel header button */
+.intel-btn { font-size: 11px; padding: 4px 12px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--fg2); transition: all 0.15s; display: flex; align-items: center; gap: 4px; }
+.intel-btn:hover { color: var(--fg); background: var(--bg2); }
+.intel-btn.active { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const { createElement: h, useState, useMemo, useEffect, useRef, Fragment } = React;
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+const daysAgo = (n) => {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  d.setHours(d.getHours() - Math.floor(Math.random() * 6));
+  return d.toISOString();
+};
+const monthsAgo = (n) => {
+  const d = new Date();
+  d.setMonth(d.getMonth() - n);
+  return d.toISOString();
+};
+
+const accounts = [
+  { id:"helix", name:"Helix AI", description:"Code-gen foundation model lab focused on developer tooling", type:"Existing Client", tags:["Expansion Opportunity"], contactName:"Priya Shah", contactRole:"Head of Post-Training", contactEmail:"priya.shah@helixai.com", contractValue:480000, contractCeiling:2000000, contractStart:monthsAgo(8), renewalMonths:4 },
+  { id:"meridian", name:"Meridian Labs", description:"Long-horizon agent research lab", type:"Existing Client", tags:["Churn Risk"], contactName:"Marcus Chen", contactRole:"VP Research Operations", contactEmail:"marcus.chen@meridianlabs.com", contractValue:1800000, contractCeiling:2200000, contractStart:monthsAgo(10), renewalMonths:2 },
+  { id:"synthos", name:"Synthos", description:"Multimodal video understanding models", type:"Existing Client", tags:["Expansion Opportunity"], contactName:"Elena Volkov", contactRole:"Director of Model Training", contactEmail:"elena.volkov@synthos.com", contractValue:950000, contractCeiling:1200000, contractStart:monthsAgo(8), renewalMonths:2 },
+  { id:"arclight", name:"Arclight AI", description:"Frontier reasoning models for code and math", type:"Existing Client", tags:["Churn Risk","Expansion Opportunity"], contactName:"James O'Sullivan", contactRole:"Head of Post-Training", contactEmail:"james.osullivan@arclightai.com", contractValue:3100000, contractCeiling:4000000, contractStart:monthsAgo(9), renewalMonths:3 },
+  { id:"vanta", name:"Vanta Research", description:"Open-weight model lab with focus on alignment", type:"Existing Client", tags:["Expansion Opportunity"], contactName:"Aisha Patel", contactRole:"Data Lead", contactEmail:"aisha.patel@vantaresearch.com", contractValue:620000, contractCeiling:800000, contractStart:monthsAgo(7), renewalMonths:5 },
+  { id:"quantum", name:"Quantum Minds", description:"Stealth-mode AGI lab, Series B", type:"Prospect", tags:["New Opportunity"], contactName:"Daniel Reyes", contactRole:"Co-founder & CTO", contactEmail:"daniel.reyes@quantumminds.com" },
+  { id:"orbital", name:"Orbital ML", description:"Robotics foundation models for warehouse automation", type:"Prospect", tags:["New Opportunity"], contactName:"Sophia Lindqvist", contactRole:"VP Engineering", contactEmail:"sophia.lindqvist@orbitalml.com" },
+  { id:"stratos", name:"Stratos AI", description:"Defense-focused multimodal intelligence platform", type:"Prospect", tags:["New Opportunity"], contactName:"Col. Robert Hayes (ret.)", contactRole:"Chief AI Officer", contactEmail:"robert.hayes@stratosai.com" },
+  { id:"deepform", name:"Deepform", description:"Generative protein design models", type:"Prospect", tags:["New Opportunity"], contactName:"Dr. Yuki Tanaka", contactRole:"Head of ML", contactEmail:"yuki.tanaka@deepform.com" },
+  { id:"nexus", name:"Nexus Intelligence", description:"Enterprise AI agents for financial services", type:"Prospect", tags:["New Opportunity"], contactName:"Olivia Brennan", contactRole:"SVP Product", contactEmail:"olivia.brennan@nexusintel.com" },
+];
+
+let _sid = 0;
+const s = (d) => ({ id:`s${++_sid}`, ...d });
+
+const signals = [
+  // Helix
+  s({accountId:"helix",type:"Funding",source:"TechCrunch",timestamp:daysAgo(2),description:"Helix AI closed a $500M Series B led by Founders Fund to scale code-gen model training and developer tooling.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"helix",type:"Hiring",source:"Job Board",timestamp:daysAgo(5),description:"Posted 9 new roles for senior engineer annotators (code review SMEs) and a Lead for RLHF code-review pipelines.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"helix",type:"Research",source:"arXiv",timestamp:daysAgo(11),description:"Published paper on code-completion eval where their model trails Claude on multi-file refactor tasks by 11 pts.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"helix",type:"Competitor",source:"Twitter / X",timestamp:daysAgo(4),description:"Clyde released a major new version that engineering managers are publicly praising for code review quality. Directly threatens Helix's RLHF-for-code-review workstream value proposition.",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(5),description:"RLHF preference data workstream TAT has slipped from 5 days to 9 days over the last 3 weeks. Workstream is at 54% of contracted volume with renewal in 4 months.",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(6),description:"Eval set construction workstream is at 30% of contracted volume and has seen zero new batch activity in 6 weeks. New Research Lead Dani Okafor owns this workstream and has never been introduced to AQ.",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(7),description:"SFT workstream for Python, TypeScript, and Rust code completion is at 92% of contracted volume and on pace. However Rust batches have been rejected 3 times in the last 30 days.",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(1),description:"At current spend rate of ~$60K/month, Helix will reach approximately $720K by renewal — 36% of the $2M MSA ceiling. Contract is severely behind pace. Significant workstream expansion required to justify renewal at current contract value.",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Relationship",source:"Gmail",timestamp:daysAgo(3),description:"Priya's average email response time has increased from 4 hours to 31 hours over the last 3 weeks. Last two check-in meeting invites were declined without a reschedule.",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Relationship",source:"Gong",timestamp:daysAgo(7),description:"Call transcript — Marcus to Michael: \"I don't know why we keep getting batches that fail on Rust ownership patterns. This is the third time. At some point this becomes a vendor problem, not a feedback problem.\"",classification:"Risk",urgency:"High"}),
+  s({accountId:"helix",type:"Relationship",source:"Fireflies",timestamp:daysAgo(6),description:"Dani has joined the company supporting the Eval workstream. No one from AQ has met with her yet.",classification:"Opportunity",urgency:"High"}),
+  // Meridian
+  s({accountId:"meridian",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(1),description:"TAT on agent trajectory eval batches degraded from 3.2 → 6.8 days over last 3 weeks. Batch rejection rate at 14%.",classification:"Risk",urgency:"High"}),
+  s({accountId:"meridian",type:"Relationship",source:"LinkedIn",timestamp:daysAgo(7),description:"Champion Sarah Kim (former Data Lead) departed to OpenAI. New stakeholder unconfirmed.",classification:"Risk",urgency:"High"}),
+  s({accountId:"meridian",type:"Relationship",source:"Internal CRM",timestamp:daysAgo(14),description:"Marcus Chen has not responded to last 3 weekly syncs. Slack activity in shared channel dropped to zero.",classification:"Risk",urgency:"High"}),
+  s({accountId:"meridian",type:"Competitor",source:"The Information",timestamp:daysAgo(9),description:"Scale AI announced expanded agent-trajectory offering with Meridian named as design partner.",classification:"Risk",urgency:"Medium"}),
+  s({accountId:"meridian",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(2),description:"Meridian is at 82% of contract ceiling with 2 months remaining and delivery issues unresolved. Renewal conversation is imminent and at risk.",classification:"Risk",urgency:"High"}),
+  s({accountId:"meridian",type:"Relationship",source:"Gmail",timestamp:daysAgo(4),description:"Marcus's last three replies were one-line acknowledgements with no forward motion. Forwarded our QBR deck internally to an unknown distribution list without comment.",classification:"Risk",urgency:"High"}),
+  s({accountId:"meridian",type:"Relationship",source:"Gong",timestamp:daysAgo(10),description:"Call transcript — Marcus on internal sync: \"Honestly, the agent eval pipeline has been more drag than lift. We should be evaluating whether to bring this in-house.\"",classification:"Risk",urgency:"High"}),
+  s({accountId:"meridian",type:"Relationship",source:"Fireflies",timestamp:daysAgo(8),description:"Notes from a Meridian eng all-hands: new Director of Eval Infra Rachel Tan introduced herself as 'owning all third-party data partnerships going forward.' Not yet on our distribution list.",classification:"Opportunity",urgency:"Medium"}),
+  // Synthos
+  s({accountId:"synthos",type:"Press",source:"Synthos Blog",timestamp:daysAgo(4),description:"Announced Synthos V3 with native long-video understanding (up to 2 hours of context).",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"synthos",type:"Funding",source:"Bloomberg",timestamp:daysAgo(18),description:"Raised $180M Series B extension at $1.6B valuation, doubling training compute budget.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"synthos",type:"Hiring",source:"Job Board",timestamp:daysAgo(8),description:"Hiring 6 video-annotation specialists and a Head of Multimodal Data Operations.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"synthos",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(3),description:"Synthos is on pace to hit 100% contract utilization 7 weeks before renewal. Expansion proposal needed now to capture incremental spend before they look elsewhere.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"synthos",type:"Relationship",source:"Gong",timestamp:daysAgo(5),description:"Call transcript — Elena to her team: \"AQ is the only vendor who actually understands the long-video annotation problem. We need to lock them in before V3 launch.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"synthos",type:"Relationship",source:"Outlook",timestamp:daysAgo(2),description:"Elena forwarded our last capability deck to Synthos's CFO with the note: \"Worth budgeting for a 2x expansion in Q1.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"synthos",type:"Relationship",source:"Fireflies",timestamp:daysAgo(11),description:"Meeting notes — new stakeholder Tomás Reyes (Head of Multimodal Data Ops) asked specifically about AQ's video-rater calibration methodology.",classification:"Opportunity",urgency:"Medium"}),
+  // Arclight
+  s({accountId:"arclight",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(2),description:"Code-reasoning workstream stalled — zero new batches submitted in 11 days after running at 200/week.",classification:"Risk",urgency:"High"}),
+  s({accountId:"arclight",type:"Press",source:"Arclight Blog",timestamp:daysAgo(6),description:"Released Arclight-R2, a new reasoning model topping LiveCodeBench. Math reasoning still 12 pts behind GPT-5.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"arclight",type:"Hiring",source:"LinkedIn",timestamp:daysAgo(10),description:"Posted Head of Math Reasoning Data role — signals upcoming math-focused training run.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"arclight",type:"Relationship",source:"Internal CRM",timestamp:daysAgo(13),description:"New stakeholder, Priya Anand (Director of Eval), added to account from buyer side.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"arclight",type:"Competitor",source:"TechCrunch",timestamp:daysAgo(20),description:"Surge AI announced new code-reasoning data product with case study from rival lab.",classification:"Risk",urgency:"Medium"}),
+  s({accountId:"arclight",type:"Usage",source:"Internal Usage Data",timestamp:daysAgo(2),description:"Arclight has used 78% of ceiling with 3 months remaining but workstream stalled 11 days ago. Without reactivation, renewal conversation will be difficult.",classification:"Risk",urgency:"High"}),
+  s({accountId:"arclight",type:"Relationship",source:"Gmail",timestamp:daysAgo(3),description:"James has not opened our last two weekly digest emails. Open rate dropped from 100% to 0% over the past month.",classification:"Risk",urgency:"High"}),
+  s({accountId:"arclight",type:"Relationship",source:"Gong",timestamp:daysAgo(7),description:"Call transcript — Priya Anand (new Director of Eval) to James: \"I want to talk to AQ directly. From what I've seen, they're ahead of where Surge is on reasoning evals.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"arclight",type:"Relationship",source:"Fireflies",timestamp:daysAgo(14),description:"Meeting notes from Arclight planning sync: \"Math reasoning push starts Q1. Need to identify a data partner with strong SME network in olympiad-level math by end of month.\"",classification:"Opportunity",urgency:"Medium"}),
+  // Vanta
+  s({accountId:"vanta",type:"Research",source:"arXiv",timestamp:daysAgo(5),description:"Published RLHF paper noting bottleneck in human preference data quality for safety-critical prompts.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"vanta",type:"Funding",source:"Forbes",timestamp:daysAgo(22),description:"Closed $75M from OSS-friendly investors, earmarked partially for alignment data partnerships.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"vanta",type:"Hiring",source:"Job Board",timestamp:daysAgo(9),description:"Opened 4 roles for red-team data engineers and safety-eval specialists.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"vanta",type:"Relationship",source:"Gong",timestamp:daysAgo(4),description:"Call transcript — Aisha to her team: \"The safety-eval pilot with AQ is the cleanest data we've gotten. Let's scope a full red-team partnership.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"vanta",type:"Relationship",source:"Gmail",timestamp:daysAgo(9),description:"Aisha looped in their Head of Alignment, Devon Lee, on our last thread with the note: \"Devon — these are the folks I was telling you about.\"",classification:"Opportunity",urgency:"Medium"}),
+  // Quantum
+  s({accountId:"quantum",type:"Funding",source:"TechCrunch",timestamp:daysAgo(3),description:"Emerged from stealth with $220M Series B from Sequoia + a16z. Mission: long-horizon planning agents.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"quantum",type:"Hiring",source:"LinkedIn",timestamp:daysAgo(6),description:"Posted Head of Training Data and 8 ML engineer roles — building data org from scratch.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"quantum",type:"Research",source:"arXiv",timestamp:daysAgo(15),description:"CTO Daniel Reyes published preprint on agent trajectory eval — a known AQ strength.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"quantum",type:"Relationship",source:"Fireflies",timestamp:daysAgo(5),description:"Meeting notes from a Quantum Minds founders sync: \"Daniel mentioned AQ by name as a likely first hire on the data side. Wants intros via Sequoia.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"quantum",type:"Relationship",source:"Gmail",timestamp:daysAgo(2),description:"Daniel replied to our cold intro within 14 minutes, asking for a same-week call. \"Trajectory eval is the bottleneck. Let's talk.\"",classification:"Opportunity",urgency:"High"}),
+  // Orbital
+  s({accountId:"orbital",type:"Funding",source:"The Information",timestamp:daysAgo(7),description:"Raised $90M Series A to build robotics foundation models. Compute partner: CoreWeave.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"orbital",type:"Hiring",source:"Job Board",timestamp:daysAgo(4),description:"Posted 5 roles for teleoperation data ops and a Director of Real-World Data.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"orbital",type:"Press",source:"IEEE Spectrum",timestamp:daysAgo(12),description:"Demo video of warehouse robot fleet went viral — internal pressure to ship v2 fast.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"orbital",type:"Competitor",source:"TechCrunch",timestamp:daysAgo(19),description:"Physical Intelligence announced partnership with Scale for robotics data labeling.",classification:"Risk",urgency:"Medium"}),
+  s({accountId:"orbital",type:"Relationship",source:"Gong",timestamp:daysAgo(6),description:"Call transcript — Sophia to her engineering lead: \"The Scale + Physical Intelligence deal worries me. We need a differentiated data partner. Look at AQ and one other.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"orbital",type:"Relationship",source:"Outlook",timestamp:daysAgo(3),description:"Sophia accepted our intro call within 2 hours and added their new Director of Real-World Data to the invite.",classification:"Opportunity",urgency:"High"}),
+  // Stratos
+  s({accountId:"stratos",type:"Press",source:"Defense News",timestamp:daysAgo(5),description:"Awarded $120M DoD contract for multimodal ISR intelligence platform — must ship in 9 months.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"stratos",type:"Hiring",source:"ClearanceJobs",timestamp:daysAgo(8),description:"Hiring TS/SCI-cleared annotators and a Director of Secure Data Operations.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"stratos",type:"Funding",source:"Bloomberg",timestamp:daysAgo(25),description:"Closed $150M Series B led by Founders Fund and In-Q-Tel.",classification:"Opportunity",urgency:"Low"}),
+  s({accountId:"stratos",type:"Relationship",source:"Gmail",timestamp:daysAgo(4),description:"Col. Hayes replied to our outreach: \"TS/SCI annotator capacity is the gating factor for our DoD timeline. Send your cleared-staff overview by Friday.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"stratos",type:"Relationship",source:"Fireflies",timestamp:daysAgo(10),description:"Meeting notes from a Stratos program review: \"Two vendors shortlisted for the ISR data partnership. AQ is one. Decision in 4 weeks.\"",classification:"Opportunity",urgency:"High"}),
+  // Deepform
+  s({accountId:"deepform",type:"Research",source:"Nature Biotechnology",timestamp:daysAgo(4),description:"Published SOTA results on protein binder design — bottleneck cited: wet-lab validation throughput.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"deepform",type:"Funding",source:"Endpoints News",timestamp:daysAgo(10),description:"Series A extension of $60M led by ARCH Venture Partners.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"deepform",type:"Hiring",source:"LinkedIn",timestamp:daysAgo(13),description:"Hiring Head of ML Data and 3 computational biologist annotator roles.",classification:"Opportunity",urgency:"Medium"}),
+  s({accountId:"deepform",type:"Relationship",source:"Gong",timestamp:daysAgo(7),description:"Call transcript — Dr. Tanaka to a collaborator: \"For protein binder validation we need annotators with actual wet-lab intuition, not just MTurkers. AQ claims they have that bench.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"deepform",type:"Relationship",source:"Gmail",timestamp:daysAgo(3),description:"Dr. Tanaka asked for a sample annotation pack on three protein design tasks. Wants to evaluate quality before any commercial conversation.",classification:"Opportunity",urgency:"Medium"}),
+  // Nexus
+  s({accountId:"nexus",type:"Press",source:"Reuters",timestamp:daysAgo(6),description:"Launched enterprise finance-agent product with JPMorgan as design partner.",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"nexus",type:"Hiring",source:"Job Board",timestamp:daysAgo(9),description:"Posted Head of Financial Data Annotation and 6 SME annotator roles (CFA/CPA preferred).",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"nexus",type:"Competitor",source:"WSJ",timestamp:daysAgo(16),description:"Hebbia raised $130M to attack the same enterprise finance segment.",classification:"Risk",urgency:"Medium"}),
+  s({accountId:"nexus",type:"Funding",source:"TechCrunch",timestamp:daysAgo(28),description:"Closed $50M Series A from Bain Capital Ventures.",classification:"Opportunity",urgency:"Low"}),
+  s({accountId:"nexus",type:"Relationship",source:"Outlook",timestamp:daysAgo(2),description:"Olivia forwarded our capabilities one-pager to JPMorgan's design partner lead with the note: \"This is the team I want running our SME annotation workflow.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"nexus",type:"Relationship",source:"Gong",timestamp:daysAgo(8),description:"Call transcript — Olivia to her product team: \"We can't compete with Hebbia on speed unless our financial eval data is sharper. AQ's CFA-credentialed pool is the differentiator.\"",classification:"Opportunity",urgency:"High"}),
+  s({accountId:"nexus",type:"Relationship",source:"Fireflies",timestamp:daysAgo(13),description:"Meeting notes — new SVP Engineering Raj Mehta joined the Nexus side of the table. Asked who their current annotation vendor was. Olivia answered: \"AQ, and we want to expand.\"",classification:"Opportunity",urgency:"Medium"}),
+];
+
+// ── INTEL DATA ────────────────────────────────────────────────────────────────
+const accountIntel = {
+  helix: {
+    pocs: [
+      { name:"Priya Shah", role:"Head of Post-Training", tenure:"14 months", speaksTo:"Model performance outcomes and delivery accountability", wants:"A reliable data partner she does not have to babysit", careerPattern:"Operator who moved from research — values rigor but thinks in shipping timelines", keyQuote:"I don't need updates, I need the work to be right the first time.", amTip:"Lead with what changed and why it won't happen again. She responds to accountability, not relationship warmth.", sentiment:"Cooling" },
+      { name:"Marcus Liu", role:"ML Engineer, SFT", tenure:"22 months", speaksTo:"Annotator quality and technical precision on language-specific tasks", wants:"Batches he can approve without three rounds of back and forth", careerPattern:"IC engineer who owns quality end-to-end — treats rejected batches as a personal signal about the vendor", keyQuote:"Rust isn't Python. The annotators need to actually know the idioms.", amTip:"Get Michael to do a live technical walkthrough with him. Marcus respects depth over process.", sentiment:"Cooling" },
+      { name:"Dani Okafor", role:"Research Lead, Evals", tenure:"6 weeks", speaksTo:"Benchmark integrity and eval coverage that reflects real model behavior", wants:"To establish her eval roadmap and find partners who can execute on it fast", careerPattern:"Safety researcher (NVIDIA) transitioning to applied evals — thinks in failure modes and edge cases", keyQuote:"I want evals that actually surface where the model breaks, not evals that make it look good.", amTip:"Do not pitch AQ's catalog. Ask about her roadmap first. She will tell you exactly what she needs if you listen.", sentiment:"Warm" },
+    ],
+    dynamics:"Priya holds budget authority and signed the deal, but Marcus controls day-to-day quality perception. A deteriorating relationship with Marcus directly affects Priya's confidence in AQ even if she does not say so. Dani is currently independent of both — she is building her own view of vendors from scratch. The fastest path to account health is resolving Marcus's quality concerns visibly, then using that resolution as the entry point with Dani before Priya's renewal conversation."
+  },
+  meridian: {
+    pocs: [
+      { name:"Marcus Chen", role:"VP Research Operations", tenure:"3 years", speaksTo:"Throughput, predictability, and not having to explain vendor problems upward", wants:"To stop being the person fielding complaints about trajectory eval delays", careerPattern:"Long-tenure ops leader — political, risk-averse, will quietly replace a vendor before escalating", keyQuote:"I shouldn't have to be in the loop on TAT. That's what I'm paying for.", amTip:"Do not ask for a meeting to 'check in.' Bring a concrete remediation plan with named owners and dates, then ask for 15 minutes to walk through it.", sentiment:"Cooling" },
+      { name:"Rohan Mehta", role:"Senior Research Engineer, Agents", tenure:"18 months", speaksTo:"Trajectory quality, edge-case coverage, agent failure taxonomy", wants:"A vendor that understands long-horizon agent eval is not the same as RLHF", careerPattern:"Research-adjacent engineer who reviews batches personally — Scale's pitch is landing with him right now", keyQuote:"If the trajectories don't capture tool-use failures, the eval is useless to us.", amTip:"He is the person Scale is selling to. Get in front of him this week with a worked example on a real failure mode.", sentiment:"Cooling" },
+    ],
+    dynamics:"Sarah Kim was the relationship anchor and she is gone. Marcus has retreated because he no longer has a trusted internal advocate validating AQ's work, and Rohan is being actively courted by Scale. The account is at acute risk: without a visible quality reset in the next two weeks, Marcus will quietly approve a Scale pilot."
+  },
+  synthos: {
+    pocs: [
+      { name:"Elena Volkov", role:"Director of Model Training", tenure:"2 years", speaksTo:"Training data scale, video annotation throughput, hitting V3 milestones", wants:"To lock in expanded capacity before the V3 launch creates a data crunch", careerPattern:"Builder who scaled the data org from 2 to 40 — moves fast, decides fast, expects vendors to keep up", keyQuote:"V3 ships in Q1 whether the data is ready or not. Tell me what you can deliver, not what you'd like to.", amTip:"Bring a concrete capacity proposal with pricing on the first call. She will not engage with discovery questions.", sentiment:"Warm" },
+      { name:"Tomás Ribeiro", role:"Head of Multimodal Data Ops", tenure:"4 months", speaksTo:"Annotator specialization for long-form video, QA workflows, cost per labeled hour", wants:"To prove out his function with a clean V3 data pipeline win", careerPattern:"Came from YouTube Trust & Safety — knows video annotation deeply, building reputation internally", keyQuote:"I'm new here. The first pipeline I stand up needs to work.", amTip:"Make him look good. Offer to co-design the long-video annotation spec with him; he will champion AQ internally if you do.", sentiment:"Warm" },
+    ],
+    dynamics:"Elena owns the budget and the urgency; Tomás owns the operational detail. They are aligned and motivated. The risk is not the relationship — it is moving too slowly. If AQ is not the first vendor with a concrete V3 capacity proposal in their inbox this month, a competitor will define the deal shape."
+  },
+  arclight: {
+    pocs: [
+      { name:"James O'Sullivan", role:"Head of Post-Training", tenure:"11 months", speaksTo:"Reasoning model performance, benchmark wins, where the next training run goes", wants:"A math-reasoning data pipeline ready before the next training run kicks off", careerPattern:"Ex-DeepMind researcher — competitive, benchmark-driven, will switch vendors mid-program to win a leaderboard", keyQuote:"We're 12 points behind on math. I don't care how we close that gap, I care that we do.", amTip:"Pitch math-reasoning capacity now — he is actively scoping. The code-reasoning stall is a separate conversation; do not conflate them.", sentiment:"Neutral" },
+      { name:"Priya Anand", role:"Director of Eval", tenure:"3 weeks", speaksTo:"Eval rigor, contamination, benchmark integrity", wants:"To stand up an internal eval function that the research team trusts", careerPattern:"Eval lead from Anthropic — opinionated about methodology, skeptical of vendors by default", keyQuote:"Most vendor evals are theater. Show me your contamination methodology before we talk about scope.", amTip:"She is new and forming first impressions. Send her the methodology doc, not the sales deck. Earn credibility before asking for scope.", sentiment:"Neutral" },
+    ],
+    dynamics:"The code-reasoning stall reads like churn but is actually a pivot — James is reallocating budget to the math run. Priya is a new gatekeeper who will shape how all future eval work gets scoped. The play is to land the math-reasoning expansion with James while building methodology credibility with Priya in parallel."
+  },
+  vanta: {
+    pocs: [
+      { name:"Aisha Patel", role:"Data Lead", tenure:"16 months", speaksTo:"Open-source values, alignment data quality, transparent methodology", wants:"A data partner whose values align with Vanta's open-weight mission", careerPattern:"Academic background (CMU NLP) — cares about methodology being publishable, not just delivered", keyQuote:"If we can't describe how the data was collected in a paper, we can't use it.", amTip:"Lead with methodology and provenance. Pricing and capacity are secondary — get the approach right first.", sentiment:"Warm" },
+      { name:"Eitan Gross", role:"Safety Research Lead", tenure:"8 months", speaksTo:"Red-team coverage, adversarial prompts, safety-eval rigor", wants:"Red-team data that surfaces real failure modes, not synthetic ones", careerPattern:"Ex-Redwood Research — deeply technical, dismissive of generic safety pitches", keyQuote:"I don't want generic red-team prompts. I want adversarial coverage of our actual deployment surface.", amTip:"Bring a worked sample of red-team prompts targeted at Vanta's specific model behavior before the first call.", sentiment:"Warm" },
+    ],
+    dynamics:"Aisha and Eitan are aligned and both technically opinionated. The account will expand if AQ can credibly speak to methodology and safety depth — the recent funding is earmarked exactly for this. The risk is showing up with a generic enterprise pitch; that will close both doors at once."
+  },
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const SIGNAL_EMOJI = { Funding:"💰", Press:"📣", Research:"📄", Hiring:"💼", Usage:"⚠️", Relationship:"🤝", Competitor:"🏁" };
+
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const d = Math.floor(diff / 86400000);
+  if (d === 0) { const h = Math.floor(diff / 3600000); return h <= 1 ? "just now" : h + "h ago"; }
+  if (d === 1) return "yesterday";
+  if (d < 7) return d + "d ago";
+  if (d < 30) return Math.floor(d/7) + "w ago";
+  return Math.floor(d/30) + "mo ago";
+}
+
+function fmtCurrency(n) {
+  if (n >= 1e6) return "$" + (n/1e6).toFixed(1) + "M";
+  if (n >= 1000) return "$" + (n/1000).toFixed(0) + "K";
+  return "$" + n;
+}
+
+function firstName(full) {
+  return full.replace(/^(Dr\.|Col\.)\s+/, "").split(" ")[0];
+}
+
+function urgencyClass(u) {
+  return u === "High" ? "badge-urg-h" : u === "Medium" ? "badge-urg-m" : "badge-urg-l";
+}
+
+function initials(name) {
+  return name.split(" ").map(w => w[0]).slice(0,2).join("");
+}
+
+// ── OUTREACH ──────────────────────────────────────────────────────────────────
+const VALUE_PROPS = {
+  Funding:["Scale your data pipeline fast — we spin up SME-vetted annotator pods in under 14 days.","Convert capital into model quality: PhD-grade reasoning, code, and math data at frontier-lab volume.","Dedicated training-data PM so your ML team never touches ops."],
+  Press:["Sustain launch momentum with data tuned to the workloads you just announced.","Post-launch eval suites built by domain SMEs — see where v-next breaks before users do."],
+  Research:["We staff PhD-level annotators in the exact domain of your paper.","Custom eval and preference datasets to close the gap your benchmark surfaced.","Reasoning-trace and chain-of-thought data engineered for RLHF/RLVR pipelines."],
+  Hiring:["Skip the 6-month annotator-org build — we deliver an instrumented data pod next week.","Flexible bench: scale SME annotators up and down without headcount risk.","Your Head of Data hire focuses on strategy; we handle the throughput."],
+  Usage:["Root-cause TAT and rejection-rate degradation with a dedicated quality lead.","Reallocate workstream capacity within 48h — we'll re-tier the pod.","Expand into adjacent workstreams with reserved capacity pricing."],
+  Relationship:["Re-anchor the relationship with a tailored model-quality readout.","Onboard new stakeholders with a 30-min AQ capabilities deep-dive."],
+  Competitor:["Benchmark where you stand: head-to-head eval against the competitor's data quality.","Capability parity in 30 days — we've shipped equivalent workstreams for 3 frontier labs.","Differentiated SME pools competitors can't access (PhD biology, quant finance, TS/SCI cleared)."],
+};
+
+const CALENDAR = "📅 Book a 25-minute call: https://calendly.com/afterquery/intro";
+
+function genAngle(account, signal, allSignals) {
+  const t = signal.type;
+  if (t === "Funding") {
+    const util = account.contractCeiling && account.contractValue ? (account.contractValue / account.contractCeiling) * 100 : 100;
+    const hasRisk = allSignals && allSignals.some(s => s.type === "Usage" && s.classification === "Risk");
+    if (util < 40 && hasRisk) return account.name + " just raised $500M and AQ is underdelivering on two of three workstreams at the exact moment they have the most capital and urgency. This is a window to reset — lead with accountability on the RLHF TAT slip and Rust SFT quality issues, then reframe the conversation around what AQ can do at scale given their eval infrastructure signal.";
+    return account.name + " just unlocked fresh capital — the window to become their default training-data partner is open for the next 30–60 days before they lock in vendors.";
+  }
+  if (t === "Press") return account.name + "'s public launch creates a forcing function for v-next data and eval coverage. AQ can plug in within the news cycle while internal urgency is highest.";
+  if (t === "Research") return account.name + "'s research output exposes exactly the data bottleneck AQ is built to solve. Lead with a domain-matched SME pod proposal.";
+  if (t === "Hiring") return account.name + " is publicly building a data org — they will buy or build in the next quarter. We sell them the buy option with a working pod inside 14 days.";
+  if (t === "Usage") return account.tags.includes("Churn Risk") ? "Usage signal is a churn precursor at " + account.name + ". We need an executive-level QBR motion this week with a remediation plan before the renewal conversation hardens." : account.name + " is hitting contracted capacity — perfect moment to propose an expansion SKU at favorable unit economics before they shop the workstream.";
+  if (t === "Relationship") return "Relationship health at " + account.name + " is degrading. Treat this as a save motion: surface value, re-anchor with new stakeholders, and reset the cadence before silence becomes a non-renewal.";
+  return "Competitor pressure on " + account.name + " is concrete and recent. Reach out with a defensible differentiation pitch and an offer to benchmark.";
+}
+
+function genSubject(account, signal) {
+  const t = signal.type;
+  if (t === "Funding") return "Congrats on the raise — quick idea for " + account.name + "'s data pipeline";
+  if (t === "Press") return "Loved the " + account.name + " launch — one thought on what comes next";
+  if (t === "Research") return "Your latest paper + a data idea for " + account.name;
+  if (t === "Hiring") return "Saw the data roles at " + account.name + " — a faster path?";
+  if (t === "Usage") return "Quick check-in on the " + account.name + " workstream";
+  if (t === "Relationship") return "Reconnecting — quick update for the " + account.name + " team";
+  return "A quick benchmark idea for " + account.name;
+}
+
+function genBody(account, signal) {
+  const fn = firstName(account.contactName);
+  const t = signal.type;
+  const bodies = {
+    Funding: `Hi ${fn},\n\nSaw the news — congrats on the raise. Funding rounds at your stage usually translate into an immediate sprint on training data throughput, and that's exactly where AQ plugs in.\n\nSpecifically on the signal we picked up (${signal.description}), we've spun up SME-vetted annotator pods for 3 frontier labs inside 14 days. Happy to share what that ramp looked like and what it could mean for ${account.name}'s next model release.\n\nWorth a 20-minute chat next week?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+    Press: `Hi ${fn},\n\nBig congrats on the launch — really impressive work from the ${account.name} team.\n\nLaunches like this usually trigger a wave of v-next data + eval needs. We've helped frontier labs build post-launch eval suites with domain SMEs so they can see where the next version breaks before users do.\n\nOpen to a quick 20 min next week?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+    Research: `Hi ${fn},\n\nJust read the recent paper out of ${account.name} — strong work, particularly on the eval methodology.\n\nOne thing stood out: ${signal.description} That's the exact wedge AQ is built for — PhD-grade SMEs producing reasoning traces and preference data tuned to your domain. We could put together a small pilot dataset matched to the benchmark in question.\n\nWorth a 20-min walkthrough?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+    Hiring: `Hi ${fn},\n\nNoticed ${account.name} is hiring across the data org (${signal.description.replace(/\.$/, "")}). Building that internally is a 6-month exercise; AQ typically stands up an instrumented pod inside two weeks so your incoming Head of Data can focus on strategy instead of ops.\n\nHappy to share how we've done this with similar labs. 20 minutes next week?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+    Usage: `Hi ${fn},\n\nWanted to flag what we're seeing on the ${account.name} workstream: ${signal.description}\n\nI'd like to walk you through a concrete remediation plan and, separately, a couple of adjacent workstreams where we think we can move the needle. Can we grab 30 minutes this week?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+    Relationship: `Hi ${fn},\n\nWanted to reconnect — it's been a few weeks since we synced, and I want to make sure we're still aligned on what's most valuable to the ${account.name} team going into the next quarter.\n\nI have a short readout on workstream quality and a couple of expansion ideas. Could we grab 25 minutes this week?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+    Competitor: `Hi ${fn},\n\nYou probably saw this already — ${signal.description} Wanted to reach out proactively.\n\nWe've run head-to-head data-quality benchmarks for labs in similar situations and have a clear point of view on where AQ's SME pools differentiate. Happy to share the benchmark methodology + initial read.\n\nWorth 20 minutes?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`,
+  };
+  return bodies[t] || bodies.Usage;
+}
+
+function genTalkingPoints(account, signal) {
+  const t = signal.type;
+  if (t === "Funding") return [`Reference the raise and tie it to a concrete throughput target for ${account.name}'s next model release.`,"Offer a 14-day pod stand-up with named SMEs in their domain.","Propose reserved-capacity pricing locked at pre-growth rates.","Share 2 frontier-lab case studies with similar post-raise ramps.","Ask: who owns the training data buy decision now that headcount is expanding?"];
+  if (t === "Press") return [`Congratulate on the launch; mirror the specific capability they shipped.`,"Propose a post-launch eval suite scoped to the new capability.","Identify 1–2 data gaps that typically show up 30–60 days after a launch like this.","Offer a 2-week pilot with a domain SME pod.","Ask about the v-next roadmap and where they expect the data bottleneck."];
+  if (t === "Research") return ["Cite the paper specifically and the bottleneck it surfaces.",`Map AQ SME pools to the exact domain (${account.description.toLowerCase()}).`,"Offer a small paid pilot dataset matched to the benchmark in the paper.","Walk through reasoning-trace and preference-data methodology.","Ask if they're planning a follow-up — and whether data is on the critical path."];
+  if (t === "Hiring") return [`Reference the specific roles posted at ${account.name}.`,"Frame AQ as the 'buy' option vs the 6-month internal build.","Offer to bridge: deliver throughput now, transition to internal team later.","Share metrics: time-to-first-batch, SME ramp time, quality benchmarks.","Ask whether the Head of Data role is filled yet — and who is making vendor decisions in the interim."];
+  if (t === "Usage") return [`Open with transparency: own the signal (${signal.description.split(".")[0]}).`,"Present a concrete 2-week remediation plan with named quality lead.","Quantify expected impact on TAT, rejection rate, and throughput.","Pivot to adjacent workstream expansion before the renewal conversation.","Confirm renewal timeline and surface any blockers early."];
+  if (t === "Relationship") return ["Acknowledge the silence without making it awkward.","Surface 1 concrete win from the last 30 days of work.","Re-introduce AQ to any new stakeholders.",`Propose a refreshed cadence (monthly QBR + weekly ops).`,"Ask what success looks like for " + account.name + " in the next quarter."];
+  return ["Acknowledge the competitor move without disparaging.","Offer a head-to-head data-quality benchmark with clear methodology.","Lean on AQ's differentiated SME pools (PhD, cleared, niche domain).","Share a case study where we won a similar bake-off.","Ask which capability they feel most exposed on — and offer a 2-week proof."];
+}
+
+function generateOutreach(account, signal, allSignals) {
+  return { angle: genAngle(account, signal, allSignals), emailSubject: genSubject(account, signal), emailBody: genBody(account, signal), talkingPoints: genTalkingPoints(account, signal), valueProps: VALUE_PROPS[signal.type] };
+}
+
+function generateMultiOutreach(account, sigs) {
+  if (!sigs || !sigs.length) return null;
+  if (sigs.length === 1) return generateOutreach(account, sigs[0]);
+  const types = [...new Set(sigs.map(s => s.type))];
+  const hasRisk = sigs.some(s => s.classification === "Risk");
+  const hasFunding = types.includes("Funding"), hasUsage = types.includes("Usage"), hasHiring = types.includes("Hiring"), hasPress = types.includes("Press"), hasRelationship = types.includes("Relationship");
+  let lead;
+  if (hasFunding && hasUsage) lead = account.name + " has fresh capital landing at the same moment their existing workstreams are hitting contracted ceilings — budget capacity and immediate data need are aligned in a way that rarely lines up this cleanly.";
+  else if (hasFunding && hasHiring) lead = account.name + " is deploying fresh capital straight into a data-org build — the buy-vs-build decision is live right now, and the window to be the 'buy' is measured in weeks, not quarters.";
+  else if (hasUsage && hasRisk) lead = "Workstream health at " + account.name + " is degrading at the same time other signals are stacking up — this is a save motion first and an expansion conversation second, and the order matters.";
+  else if (hasPress && hasHiring) lead = account.name + " just shipped publicly and is staffing up to sustain the momentum — they need v-next data and eval coverage faster than they can build the team to produce it.";
+  else if (hasRelationship && hasRisk) lead = "Relationship signals at " + account.name + " are trending the wrong way alongside operational ones — re-anchoring with the right stakeholders has to happen before any commercial conversation lands.";
+  else lead = "Multiple independent signals at " + account.name + " are converging on the same underlying story — their data needs are growing faster than their internal capacity to meet them.";
+  const pitch = hasRisk && !hasFunding ? "The pitch is a credible remediation plan paired with a clear path to expansion once trust is rebuilt — not a new SOW." : hasFunding || hasPress ? "The pitch is straightforward: AQ can scale with them right now, across the workstreams that are already proving out, without the six-month internal ramp." : hasHiring ? "The pitch is the 'buy' option — an instrumented pod in two weeks while their incoming hires focus on strategy instead of ops." : "The pitch is a single coordinated engagement across these threads rather than chasing each one separately.";
+  const angle = lead + " " + pitch;
+  const bullets = sigs.map(s => "• " + s.type + ": " + s.description.replace(/\.$/, "")).join("\n");
+  const emailBody = `Hi ${firstName(account.contactName)},\n\nA handful of signals on the ${account.name} side have stacked up over the last few weeks, and I wanted to put them in front of you together rather than in separate threads:\n\n${bullets}\n\nIndividually, any one of these is worth a conversation. Together, they suggest a clear window for AQ to step in with a coordinated plan — SME-vetted annotator pods, tailored eval coverage, and a single point of contact across workstreams.\n\nWorth a 25-minute walkthrough next week?\n\n${CALENDAR}\n\nBest,\n[Your name]\nAQ`;
+  return { angle, emailSubject: "A few things on our radar for " + account.name, emailBody, talkingPoints: ["Open by naming the pattern: " + types.join(", ") + " signals all landing in the same window.","Walk through each signal briefly and connect it to a concrete AQ motion.","Propose one coordinated plan rather than " + sigs.length + " separate workstreams.","Identify the single decision-maker who can greenlight a combined engagement.","Close on a 2-week pilot scoped to the highest-urgency signal."], valueProps: [...new Set(types.flatMap(t => (VALUE_PROPS[t] || []).slice(0,1)))] };
+}
+
+function bestSignal(account, sigs) {
+  if (!sigs.length) return null;
+  const rank = { High:3, Medium:2, Low:1 };
+  return [...sigs].sort((a,b) => (rank[b.urgency]-rank[a.urgency]) || new Date(b.timestamp)-new Date(a.timestamp))[0];
+}
+
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+
+function AccountSidebar({ selectedId, onSelect }) {
+  const [filter, setFilter] = useState("All");
+  const [query, setQuery] = useState("");
+  const filters = ["All","Existing","Prospect","Churn Risk","Expansion","New Opportunity"];
+  const highCounts = useMemo(() => {
+    const m = {};
+    signals.forEach(s => { if (s.urgency === "High") m[s.accountId] = (m[s.accountId] || 0) + 1; });
+    return m;
+  }, []);
+  const filtered = useMemo(() => accounts.filter(a => {
+    if (query && !a.name.toLowerCase().includes(query.toLowerCase())) return false;
+    if (filter === "Existing") return a.type === "Existing Client";
+    if (filter === "Prospect") return a.type === "Prospect";
+    if (filter === "Churn Risk") return a.tags.includes("Churn Risk");
+    if (filter === "Expansion") return a.tags.includes("Expansion Opportunity");
+    if (filter === "New Opportunity") return a.tags.includes("New Opportunity");
+    return true;
+  }), [filter, query]);
+
+  return h("aside", { className:"sidebar" },
+    h("div", { className:"sidebar-header" },
+      h("div", { className:"logo-icon" }, "✦"),
+      h("div", null, h("div", { className:"logo-text" }, "AQ"), h("div", { className:"logo-sub" }, "Account Pulse"))
+    ),
+    h("div", { className:"search-wrap" },
+      h("span", { className:"search-icon" }, "🔍"),
+      h("input", { className:"search-input", placeholder:"Search accounts…", value:query, onChange:e=>setQuery(e.target.value) })
+    ),
+    h("div", { className:"filter-chips" },
+      filters.map(f => h("button", { key:f, className:"chip" + (filter===f?" active":""), onClick:()=>setFilter(f) }, f))
+    ),
+    h("div", { className:"account-list" },
+      filtered.length === 0 && h("div", { style:{padding:"24px 16px",textAlign:"center",fontSize:"11px",color:"var(--fg2)"} }, "No accounts match."),
+      filtered.map(a => {
+        const high = highCounts[a.id] || 0;
+        return h("button", { key:a.id, className:"account-btn" + (a.id===selectedId?" active":""), onClick:()=>onSelect(a.id) },
+          h("div", { className:"account-avatar" }, initials(a.name)),
+          h("div", { style:{minWidth:0,flex:1} },
+            h("div", { className:"acct-name-row" },
+              h("div", { className:"account-name" }, a.name),
+              high > 0 && h("span", { className:"badge badge-high" }, high)
+            ),
+            h("div", { className:"account-tags" },
+              h("span", { className:"badge " + (a.type==="Existing Client"?"badge-client":"badge-prospect") }, a.type==="Existing Client"?"Client":"Prospect"),
+              a.tags[0] && h("span", { className:"badge " + (a.tags[0]==="Churn Risk"?"badge-churn":"badge-muted") }, a.tags[0]==="Expansion Opportunity"?"Expansion":a.tags[0]==="New Opportunity"?"New":a.tags[0])
+            )
+          )
+        );
+      })
+    )
+  );
+}
+
+function ContractBar({ account }) {
+  if (!account.contractCeiling || !account.contractValue) return null;
+  const pct = Math.min(100, Math.round((account.contractValue / account.contractCeiling) * 100));
+  const projectedMonths = 8 + (account.renewalMonths || 0);
+  const projectedTotal = Math.round((account.contractValue / 8) * projectedMonths);
+  const projPct = Math.min(100, Math.round((projectedTotal / account.contractCeiling) * 100));
+  const pace = projPct >= 80 ? "pace-ok" : projPct >= 50 ? "pace-warn" : "pace-risk";
+  return h("div", { className:"contract-bar-wrap" },
+    h("div", { className:"contract-header" },
+      h("span", null, "MSA utilization: " + fmtCurrency(account.contractValue) + " / " + fmtCurrency(account.contractCeiling)),
+      h("span", null, pct + "%")
+    ),
+    h("div", { className:"contract-bar" },
+      h("div", { className:"contract-fill " + pace, style:{width: pct + "%"} })
+    ),
+    h("div", { className:"contract-renewal" }, "Renews in " + account.renewalMonths + " months · Projected: " + fmtCurrency(projectedTotal) + " (" + projPct + "% of ceiling)")
+  );
+}
+
+const SIGNAL_TYPES = ["Funding","Press","Research","Hiring","Usage","Relationship","Competitor"];
+
+function SignalFeed({ account, onGenerate, onGenerateMulti, onOpenIntel, activePanelKind }) {
+  const [filter, setFilter] = useState("All");
+  const [checked, setChecked] = useState({});
+  const accountSigs = useMemo(() => signals.filter(s => s.accountId === account.id).sort((a,b) => new Date(b.timestamp)-new Date(a.timestamp)), [account.id]);
+  const highCount = accountSigs.filter(s => s.urgency === "High").length;
+  const visible = useMemo(() => {
+    if (filter === "All") return accountSigs;
+    if (filter === "Risk" || filter === "Opportunity") return accountSigs.filter(s => s.classification === filter);
+    return accountSigs.filter(s => s.type === filter);
+  }, [accountSigs, filter]);
+  const checkedIds = Object.keys(checked).filter(id => checked[id]);
+  const filters = ["All","Risk","Opportunity",...SIGNAL_TYPES];
+  useEffect(() => { setChecked({}); }, [account.id]);
+
+  return h("section", { className:"feed" },
+    h("div", { className:"feed-header" },
+      h("div", { className:"feed-title-row" },
+        h("span", { className:"feed-title" }, account.name),
+        h("span", { className:"badge " + (account.type==="Existing Client"?"badge-client":"badge-prospect") }, account.type),
+        ...account.tags.map(t => h("span", { key:t, className:"badge " + (t==="Churn Risk"?"badge-churn":"badge-muted") }, t)),
+        h("button", { className:"intel-btn" + (activePanelKind==="intel"?" active":""), onClick:onOpenIntel, style:{marginLeft:"auto"} }, "👤 Intel")
+      ),
+      h("div", { className:"feed-description" }, account.description),
+      h("div", { className:"feed-contact" }, h("strong", null, account.contactName), " · " + account.contactRole),
+      h("div", { className:"stats-row" },
+        h("div", { className:"stat-tile" }, h("span", { className:"stat-icon" }, "📈"), h("span", { className:"stat-label" }, "Signals"), h("span", { className:"stat-val" }, accountSigs.length)),
+        h("div", { className:"stat-tile" + (highCount>0?" high":"") }, h("span", { className:"stat-icon" + (highCount>0?" high":"") }, "⚡"), h("span", { className:"stat-label" }, "High urgency"), h("span", { className:"stat-val" + (highCount>0?" high":"") }, highCount)),
+        account.contractValue != null && h("div", { className:"stat-tile" }, h("span", { className:"stat-icon" }, "💵"), h("span", { className:"stat-label" }, "Contract"), h("span", { className:"stat-val" }, fmtCurrency(account.contractValue)))
+      ),
+      account.contractCeiling && h(ContractBar, { account })
+    ),
+    h("div", { className:"filter-bar" },
+      filters.map(f => h("button", { key:f, className:"filter-btn" + (filter===f?" active":""), onClick:()=>setFilter(f) },
+        f !== "All" && f !== "Risk" && f !== "Opportunity" ? SIGNAL_EMOJI[f] + " " + f : f
+      ))
+    ),
+    h("div", { className:"signal-list" },
+      visible.length === 0 && h("div", { className:"feed-empty" }, "No signals match this filter."),
+      visible.map(sig => h(SignalCard, { key:sig.id, signal:sig, checked:!!checked[sig.id], onCheck:v => setChecked(prev=>({...prev,[sig.id]:v})), onGenerate:()=>onGenerate(sig) }))
+    ),
+    checkedIds.length > 0 && h("div", { className:"multi-btn-row" },
+      h("button", { className:"multi-btn", onClick:()=>{ const sigs = checkedIds.map(id=>signals.find(s=>s.id===id)).filter(Boolean); onGenerateMulti(sigs); setChecked({}); } },
+        "Combined outreach (" + checkedIds.length + " signal" + (checkedIds.length>1?"s":"") + ") ↗"
+      )
+    )
+  );
+}
+
+function SignalCard({ signal, checked, onCheck, onGenerate }) {
+  return h("article", { className:"signal-card" + (checked?" active":"") },
+    h("div", { className:"sig-top" },
+      h("div", { className:"sig-icon" }, SIGNAL_EMOJI[signal.type]),
+      h("div", { className:"sig-content" },
+        h("div", { className:"sig-meta" },
+          h("span", { className:"sig-type" }, signal.type),
+          h("span", null, "·"),
+          h("span", null, signal.source),
+          h("span", null, "·"),
+          h("span", null, timeAgo(signal.timestamp))
+        ),
+        h("p", { className:"sig-desc" }, signal.description),
+        h("div", { className:"sig-footer" },
+          h("div", { className:"sig-badges" },
+            h("span", { className: signal.classification === "Risk" ? "badge-risk" : "badge-opp" }, signal.classification),
+            h("span", { className:"badge-urgency " + urgencyClass(signal.urgency) }, signal.urgency)
+          ),
+          h("div", { className:"sig-actions" },
+            h("label", { className:"checkbox-wrap" },
+              h("input", { type:"checkbox", checked, onChange:e=>onCheck(e.target.checked) }),
+              "Select"
+            ),
+            h("button", { className:"outreach-btn", onClick:onGenerate }, "Outreach ↗")
+          )
+        )
+      )
+    )
+  );
+}
+
+function OutreachPanel({ account, signal, multiSignals, accountSignals, onClose }) {
+  const isMulti = multiSignals && multiSignals.length > 1;
+  const base = useMemo(() => {
+    if (isMulti) return generateMultiOutreach(account, multiSignals);
+    if (signal) return generateOutreach(account, signal, accountSignals);
+    const top = bestSignal(account, accountSignals);
+    return top ? generateOutreach(account, top, accountSignals) : null;
+  }, [account.id, signal?.id, isMulti ? multiSignals.map(s=>s.id).join(",") : ""]);
+
+  const [to, setTo] = useState(account.contactEmail);
+  const [subj, setSubj] = useState(base?.emailSubject || "");
+  const [body, setBody] = useState(base?.emailBody || "");
+  const [points, setPoints] = useState(base?.talkingPoints || []);
+  const [copied, setCopied] = useState(false);
+
+  const resetKey = account.id + ":" + (isMulti ? "multi:" + (multiSignals||[]).map(s=>s.id).sort().join(",") : signal?.id || "acct");
+  const lastKey = useRef(resetKey);
+  useEffect(() => {
+    if (lastKey.current !== resetKey && base) {
+      lastKey.current = resetKey;
+      setTo(account.contactEmail);
+      setSubj(base.emailSubject);
+      setBody(base.emailBody);
+      setPoints(base.talkingPoints);
+    }
+  }, [resetKey, base]);
+
+  if (!base) return h("div", { className:"panel" }, h("div", { style:{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",color:"var(--fg2)",fontSize:"13px"} }, "No signals to draft outreach from."));
+
+  const mailto = "mailto:" + encodeURIComponent(to) + "?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(body);
+
+  return h("aside", { className:"panel fade-in" },
+    h("div", { className:"panel-header" },
+      h("div", null,
+        h("div", { className:"panel-title-sub" }, isMulti ? "Combined outreach · " + multiSignals.length + " signals" : "Outreach for"),
+        h("div", { className:"panel-title" }, account.name)
+      ),
+      h("div", { className:"panel-actions" },
+        h("button", { className:"icon-btn", title:"Reset", onClick:()=>{ if(base){setTo(account.contactEmail);setSubj(base.emailSubject);setBody(base.emailBody);setPoints(base.talkingPoints);} } }, "↺"),
+        h("button", { className:"icon-btn", title:"Close", onClick:onClose }, "✕")
+      )
+    ),
+    h("div", { className:"panel-body" },
+      signal && !isMulti && h("div", { className:"signal-preview" },
+        h("div", { className:"signal-preview-meta" }, h("span", null, SIGNAL_EMOJI[signal.type]), h("strong", null, signal.type), h("span", null, "· " + signal.source)),
+        h("p", null, signal.description)
+      ),
+      isMulti && h("div", { style:{display:"flex",flexDirection:"column",gap:"6px"} },
+        multiSignals.map(s => h("div", { key:s.id, className:"signal-preview" },
+          h("div", { className:"signal-preview-meta" }, h("span", null, SIGNAL_EMOJI[s.type]), h("strong", null, s.type), h("span", null, "· " + s.source)),
+          h("p", null, s.description)
+        ))
+      ),
+      h("div", null,
+        h("div", { className:"section-title-row" }, h("span", { className:"section-icon" }, "💡"), h("span", { className:"section-label" }, "Suggested angle")),
+        h("p", { className:"angle-text" }, base.angle)
+      ),
+      h("div", null,
+        h("div", { className:"section-title-row" }, h("span", { className:"section-icon" }, "✉️"), h("span", { className:"section-label" }, "Draft email")),
+        h("div", { className:"email-field-label" }, "To"),
+        h("input", { className:"email-input", value:to, onChange:e=>setTo(e.target.value) }),
+        h("div", { className:"email-field-label" }, "Subject"),
+        h("input", { className:"email-input", value:subj, onChange:e=>setSubj(e.target.value), style:{fontWeight:600} }),
+        h("div", { className:"email-field-label" }, "Body"),
+        h("textarea", { className:"email-body", value:body, onChange:e=>setBody(e.target.value), rows:12 }),
+        h("div", { className:"btn-row" },
+          h("a", { href:mailto, target:"_blank", rel:"noopener noreferrer", className:"btn-primary" }, "Open in Gmail ↗"),
+          h("button", { className:"btn-secondary", onClick:()=>{ navigator.clipboard.writeText("To: " + to + "\nSubject: " + subj + "\n\n" + body); setCopied(true); setTimeout(()=>setCopied(false),2000); } }, copied ? "Copied ✓" : "📋 Copy email")
+        )
+      ),
+      h("div", null,
+        h("div", { className:"section-title-row" }, h("span", { className:"section-icon" }, "🎯"), h("span", { className:"section-label" }, "Talking points")),
+        h("ul", { className:"talking-pts" },
+          points.map((p,i) => h("li", { key:i }, h("span", { className:"dot" }, "•"), h("span", null, p)))
+        )
+      ),
+      h("div", null,
+        h("div", { className:"section-title-row" }, h("span", { className:"section-icon" }, "→"), h("span", { className:"section-label" }, "AQ value props")),
+        h("ul", { className:"value-props" },
+          (base.valueProps || []).map((p,i) => h("li", { key:i }, h("span", { className:"arrow" }, "→"), h("span", null, p)))
+        )
+      )
+    )
+  );
+}
+
+const INTEGRATIONS = [
+  {name:"Gmail",emoji:"📧",lastSynced:"12 min ago"},
+  {name:"Gong",emoji:"📞",lastSynced:"3 hours ago"},
+  {name:"Fireflies",emoji:"📝",lastSynced:"1 hour ago"},
+  {name:"Google Drive",emoji:"📄",lastSynced:"45 min ago"},
+  {name:"Outlook",emoji:"✉️",lastSynced:"28 min ago"},
+  {name:"DocuSign",emoji:"✍️",lastSynced:"6 hours ago"},
+];
+
+const SENTIMENT_CLASS = { Warm:"sentiment-warm", Neutral:"sentiment-neutral", Cooling:"sentiment-cooling" };
+
+function POCCard({ poc }) {
+  return h("div", { className:"poc-card" },
+    h("div", { className:"poc-top" },
+      h("div", null,
+        h("div", { className:"poc-name" }, poc.name),
+        h("div", { className:"poc-role" }, poc.role),
+        h("div", { className:"poc-tenure" }, "Tenure: " + poc.tenure)
+      ),
+      h("span", { className:"sentiment-badge " + (SENTIMENT_CLASS[poc.sentiment]||"sentiment-neutral") }, poc.sentiment)
+    ),
+    h("div", { className:"poc-lines" },
+      h("div", { className:"poc-line" }, h("span", null, "🎯 "), h("strong", null, "Speaks to:"), " " + poc.speaksTo),
+      h("div", { className:"poc-line" }, h("span", null, "🏆 "), h("strong", null, "Wants:"), " " + poc.wants),
+      h("div", { className:"poc-line" }, h("span", null, "🧭 "), h("strong", null, "Career pattern:"), " " + poc.careerPattern),
+      h("div", { className:"poc-quote" }, "💬 \"" + poc.keyQuote + "\""),
+      h("div", { className:"poc-line" }, h("span", null, "⚡ "), h("strong", null, "AM tip:"), " " + poc.amTip)
+    )
+  );
+}
+
+function IntelPanel({ account, onClose }) {
+  const intel = accountIntel[account.id];
+  return h("aside", { className:"panel fade-in" },
+    h("div", { className:"panel-header" },
+      h("div", null,
+        h("div", { className:"panel-title-sub" }, "Relationship Intel"),
+        h("div", { className:"panel-title" }, account.name)
+      ),
+      h("div", { className:"panel-actions" },
+        h("button", { className:"icon-btn", title:"Close", onClick:onClose }, "✕")
+      )
+    ),
+    h("div", { className:"panel-body" },
+      !intel && h("p", { style:{textAlign:"center",color:"var(--fg2)",fontSize:"12px",paddingTop:"32px"} }, "No intel available for this account yet."),
+      intel && h(Fragment, null,
+        h("div", { className:"intel-section" },
+          h("div", { className:"intel-section-label" }, "POC Profiles"),
+          ...intel.pocs.map(poc => h(POCCard, { key:poc.name, poc }))
+        ),
+        h("div", null,
+          h("div", { className:"intel-section-label" }, "Dynamics"),
+          h("p", { className:"dynamics-box" }, intel.dynamics)
+        )
+      ),
+      h("div", null,
+        h("div", { className:"intel-section-label" }, "Connected data sources"),
+        h("p", { style:{fontSize:"11px",color:"var(--fg2)",marginBottom:"8px"} }, "POC profiles are automatically enriched from your connected tools."),
+        h("div", { style:{display:"flex",flexDirection:"column",gap:"6px"} },
+          INTEGRATIONS.map(i => h("div", { key:i.name, className:"integration-row" },
+            h("div", { className:"int-left" },
+              h("span", { style:{fontSize:"16px"} }, i.emoji),
+              h("div", null, h("div", { className:"int-name" }, i.name), h("div", { className:"int-sync" }, "Last synced: " + i.lastSynced))
+            ),
+            h("span", { className:"int-connected" }, "Connected ✓")
+          ))
+        )
+      )
+    )
+  );
+}
+
+// ── ROOT ──────────────────────────────────────────────────────────────────────
+function App() {
+  const [selectedId, setSelectedId] = useState(null);
+  const [panel, setPanel] = useState(null); // null | { kind:"outreach", signal?, multiSignals? } | { kind:"intel" }
+
+  const account = useMemo(() => accounts.find(a => a.id === selectedId), [selectedId]);
+  const accountSignals = useMemo(() => selectedId ? signals.filter(s => s.accountId === selectedId) : [], [selectedId]);
+  const activeSignal = panel?.kind === "outreach" && panel.signalId ? signals.find(s => s.id === panel.signalId) : undefined;
+  const multiSignals = panel?.kind === "outreach" && panel.multiIds ? panel.multiIds.map(id => signals.find(s => s.id === id)).filter(Boolean) : undefined;
+
+  const handleSelect = (id) => {
+    if (id === selectedId) { setSelectedId(null); setPanel(null); return; }
+    setSelectedId(id);
+    setPanel(null);
+  };
+
+  return h("div", { className:"app" },
+    h(AccountSidebar, { selectedId, onSelect:handleSelect }),
+    account
+      ? h(SignalFeed, {
+          account,
+          activePanelKind: panel?.kind,
+          onGenerate: (sig) => setPanel({ kind:"outreach", signalId:sig.id }),
+          onGenerateMulti: (sigs) => setPanel({ kind:"outreach", multiIds:sigs.map(s=>s.id) }),
+          onOpenIntel: () => setPanel(p => p?.kind==="intel" ? null : { kind:"intel" }),
+        })
+      : h("div", { className:"empty-state" },
+          h("div", { className:"empty-logo" }, "✦"),
+          h("div", { className:"empty-title" }, "AQ Account Pulse"),
+          h("div", { className:"empty-sub" }, "Select an account to view signals.")
+        ),
+    panel && account && (
+      panel.kind === "outreach"
+        ? h(OutreachPanel, { account, signal:activeSignal, multiSignals, accountSignals, onClose:()=>setPanel(null) })
+        : panel.kind === "intel"
+        ? h(IntelPanel, { account, onClose:()=>setPanel(null) })
+        : null
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>
