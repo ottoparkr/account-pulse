@@ -974,6 +974,41 @@
       .demo-note p {
         margin-top: 4px;
       }
+      .opportunity-card {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border: 1px solid rgba(245, 188, 66, 0.3);
+        border-radius: 8px;
+        background: rgba(245, 188, 66, 0.04);
+      }
+      .opportunity-kicker {
+        font-size: 10px;
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .opportunity-value {
+        margin-top: 6px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .opportunity-summary {
+        margin-top: 6px;
+        font-size: 11px;
+        line-height: 1.5;
+        color: var(--fg2);
+      }
+      .opportunity-gate {
+        margin-top: 8px;
+        font-size: 11px;
+        line-height: 1.5;
+        color: var(--fg);
+      }
+      .opportunity-footnote {
+        margin-top: 6px;
+        font-size: 10px;
+        line-height: 1.4;
+        color: var(--fg2);
+      }
       .email-field-label {
         display: block;
       }
@@ -1321,6 +1356,201 @@
             ],
           ],
         },
+        {
+          id: "aurora",
+          name: "Aurora Desk",
+          vertical: "B2B software",
+          description:
+            "Workspace software for small teams · First acquisition campaign",
+          status: "Newly onboarded",
+          tags: ["Spend opportunity"],
+          contactName: "Elena Wu",
+          contactRole: "VP Growth",
+          contactEmail: "elena@auroradesk.example",
+          spend: 0,
+          budget: 5000,
+          conversions: 0,
+          cpaGoal: 110,
+          daysElapsed: 18,
+          periodDays: 30,
+          objective: "Qualified trials",
+          campaigns: 0,
+          renewal: "First campaign review in 7 days",
+          onboardedDays: 2,
+          funding: "$42M Series B · announced 9 days ago",
+          spendOpportunity: {
+            low: 10000,
+            high: 15000,
+            horizon: "Next 30-day test",
+            drivers:
+              "Fresh capital, four growth hires, and a small-business product launch create a reason to discuss an acquisition test.",
+            gate: "Confirm the qualified-trial event and get written budget approval before proposing a launch date.",
+          },
+          context:
+            "Elena owns the acquisition plan; Finance approves any expansion beyond the $5K starter budget. The Series B creates a conversation opener, not proof that the raise is allocated to media. Build a qualified-trial baseline first.",
+          stakeholders: [
+            [
+              "Elena Wu",
+              "VP Growth",
+              "Budget sponsor",
+              "A measurable new acquisition channel for the SMB launch",
+              "Lead with the starter test and an explicit qualified-trial definition.",
+            ],
+            [
+              "Owen Brooks",
+              "Finance Director",
+              "Budget approver",
+              "A bounded test with a clear learning objective",
+              "Ask what incremental media budget is actually available; do not quote a percentage of the raise.",
+            ],
+          ],
+        },
+        {
+          id: "solace",
+          name: "Solace Skin",
+          vertical: "Beauty",
+          description:
+            "Skincare subscription brand · Recently activated starter campaign",
+          status: "Newly onboarded",
+          tags: ["Spend opportunity", "Launch ready"],
+          contactName: "Imani Reed",
+          contactRole: "Head of Growth",
+          contactEmail: "imani@solace.example",
+          spend: 480,
+          budget: 6000,
+          conversions: 8,
+          cpaGoal: 55,
+          daysElapsed: 18,
+          periodDays: 30,
+          objective: "First purchases",
+          campaigns: 1,
+          renewal: "Creative readiness review in 3 days",
+          onboardedDays: 5,
+          funding: "$18M Series A · announced 12 days ago",
+          spendOpportunity: {
+            low: 12000,
+            high: 18000,
+            horizon: "Next 30-day test",
+            drivers:
+              "A new product collection, increased fulfillment capacity, and fresh funding support an acquisition planning conversation.",
+            gate: "Get approved product claims, validate purchase reporting, and review margin before proposing more spend.",
+          },
+          context:
+            "Imani has begun a $6K starter test. Eight purchases are too few to establish a durable CPA. A larger test should follow claims approval, conversion reconciliation, and a discussion of introductory-offer economics.",
+          stakeholders: [
+            [
+              "Imani Reed",
+              "Head of Growth",
+              "Budget sponsor",
+              "Profitable first purchases for the new collection",
+              "Show early results as observations rather than proof of scalability.",
+            ],
+            [
+              "Lucas Grant",
+              "Brand Director",
+              "Creative approver",
+              "Consistent, approved product messaging",
+              "Request the final claims sheet before drafting launch creative.",
+            ],
+          ],
+        },
+        {
+          id: "juniper",
+          name: "Juniper Kitchen",
+          vertical: "Food & beverage",
+          description: "Meal delivery brand · New-market acquisition pilot",
+          status: "Newly onboarded",
+          tags: ["Spend opportunity"],
+          contactName: "Rafael Torres",
+          contactRole: "VP Marketing",
+          contactEmail: "rafael@juniper.example",
+          spend: 1200,
+          budget: 8000,
+          conversions: 20,
+          cpaGoal: 65,
+          daysElapsed: 18,
+          periodDays: 30,
+          objective: "First orders",
+          campaigns: 1,
+          renewal: "Market readiness review in 5 days",
+          onboardedDays: 4,
+          funding: "$65M Series B · announced 21 days ago",
+          spendOpportunity: {
+            low: 15000,
+            high: 25000,
+            horizon: "Next 30-day test",
+            drivers:
+              "Two planned market openings and added fulfillment capacity create a near-term demand-generation need.",
+            gate: "Confirm serviceable markets, repeat-order reporting, and an approved budget before discussing a larger test.",
+          },
+          context:
+            "Rafael wants to connect new-market demand to the funded expansion plan. The platform account is only four days old. Qualify fulfillment coverage and retention economics before using the early $60 first-order CPA to justify increased spend.",
+          stakeholders: [
+            [
+              "Rafael Torres",
+              "VP Marketing",
+              "Budget owner",
+              "Predictable new customers in the serviceable markets",
+              "Connect the test to operational readiness and a repeat-order cohort.",
+            ],
+            [
+              "Claire Nguyen",
+              "Operations Lead",
+              "Launch owner",
+              "Orders that match fulfillment capacity",
+              "Validate coverage and capacity with Operations before recommending launch scope.",
+            ],
+          ],
+        },
+        {
+          id: "summit",
+          name: "Summit Stay",
+          vertical: "Travel",
+          description:
+            "Boutique lodging marketplace · Newly onboarded advertiser",
+          status: "Newly onboarded",
+          tags: ["Spend opportunity", "Launch ready"],
+          contactName: "Avery Shah",
+          contactRole: "Growth Marketing Lead",
+          contactEmail: "avery@summit.example",
+          spend: 0,
+          budget: 4000,
+          conversions: 0,
+          cpaGoal: 80,
+          daysElapsed: 18,
+          periodDays: 30,
+          objective: "Completed bookings",
+          campaigns: 0,
+          renewal: "Onboarding checkpoint in 4 days",
+          onboardedDays: 1,
+          funding: "$28M Series A · announced 6 days ago",
+          spendOpportunity: {
+            low: 8000,
+            high: 12000,
+            horizon: "Next 30-day test",
+            drivers:
+              "A new supply partnership and a seasonal booking window create a time-sensitive reason to test customer acquisition.",
+            gate: "Approve the booking event, reconcile available inventory, and confirm creative and budget owners before launch.",
+          },
+          context:
+            "Avery has a $4K starter budget and a seasonal deadline. The funding announcement and supply partnership support discovery, but neither establishes an approved marketing allocation or a guaranteed campaign result.",
+          stakeholders: [
+            [
+              "Avery Shah",
+              "Growth Marketing Lead",
+              "Campaign owner",
+              "A small booking acquisition test before the seasonal window",
+              "Use a readiness checklist and an agreed booking definition.",
+            ],
+            [
+              "Devon Price",
+              "Partnerships Director",
+              "Inventory owner",
+              "Promote stays that are actually available to book",
+              "Confirm the live supply and landing-page coverage.",
+            ],
+          ],
+        },
       ];
       const signals = [
         {
@@ -1664,6 +1894,226 @@
             "The advertiser can provide menu images and transparent delivery terms for a new creative test.",
           source: "Sample creative review",
         },
+        {
+          id: "s32",
+          accountId: "aurora",
+          type: "Onboarding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 2,
+          description:
+            "Aurora Desk completed advertiser onboarding 2 days ago with a $5K starter budget. No campaign has launched; the first success measure is a qualified trial.",
+          source: "Sample onboarding notes",
+        },
+        {
+          id: "s33",
+          accountId: "aurora",
+          type: "Funding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 9,
+          description:
+            "Announced a $42M Series B with a stated focus on SMB growth. Ask how much is allocated to customer acquisition and whether the advertiser can fund a larger controlled test.",
+          source: "Sample funding announcement",
+        },
+        {
+          id: "s34",
+          accountId: "aurora",
+          type: "Hiring",
+          classification: "Opportunity",
+          urgency: "Medium",
+          age: 6,
+          description:
+            "Four open growth roles include paid acquisition and lifecycle marketing. The new team may need a channel test plan, but the hiring plan does not establish an approved media budget.",
+          source: "Sample hiring brief",
+        },
+        {
+          id: "s35",
+          accountId: "aurora",
+          type: "Launch",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 3,
+          description:
+            "A small-business product bundle launches in 3 weeks. Work backward from the launch date to measurement, approved creative, and the first campaign checkpoint.",
+          source: "Sample launch brief",
+        },
+        {
+          id: "s36",
+          accountId: "aurora",
+          type: "Measurement",
+          classification: "Risk",
+          urgency: "High",
+          age: 1,
+          description:
+            "The qualified-trial event is not yet agreed with Revenue Operations. Complete event validation before evaluating CPA or recommending a budget increase.",
+          source: "Sample conversion audit",
+        },
+        {
+          id: "s37",
+          accountId: "solace",
+          type: "Onboarding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 5,
+          description:
+            "Solace Skin onboarded 5 days ago and has spent $480 in a $6K starter test. Eight purchases are an early observation, not evidence of stable acquisition performance.",
+          source: "Sample onboarding notes",
+        },
+        {
+          id: "s38",
+          accountId: "solace",
+          type: "Funding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 12,
+          description:
+            "Raised an $18M Series A to develop its product range and distribution. Discover whether acquisition spending is part of the funded plan before discussing a $12K–$18K next test.",
+          source: "Sample funding announcement",
+        },
+        {
+          id: "s39",
+          accountId: "solace",
+          type: "Launch",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 2,
+          description:
+            "A new product collection launches in 2 weeks with increased fulfillment capacity. Qualify inventory and offer economics as part of the acquisition brief.",
+          source: "Sample launch brief",
+        },
+        {
+          id: "s40",
+          accountId: "solace",
+          type: "Creative",
+          classification: "Risk",
+          urgency: "High",
+          age: 1,
+          description:
+            "Final product claims have not been approved by the brand team. Secure the approved claims sheet before preparing launch creative or increasing spend.",
+          source: "Sample creative review",
+        },
+        {
+          id: "s41",
+          accountId: "solace",
+          type: "Growth",
+          classification: "Opportunity",
+          urgency: "Medium",
+          age: 3,
+          description:
+            "The advertiser reports higher subscription capacity after a fulfillment upgrade. Ask which customer segments and product lines need incremental demand.",
+          source: "Sample company expansion brief",
+        },
+        {
+          id: "s42",
+          accountId: "juniper",
+          type: "Onboarding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 4,
+          description:
+            "Juniper Kitchen onboarded 4 days ago. Its $8K starter test has generated 20 first orders on $1.2K spend; retention and serviceability are still being checked.",
+          source: "Sample onboarding notes",
+        },
+        {
+          id: "s43",
+          accountId: "juniper",
+          type: "Funding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 21,
+          description:
+            "Closed a $65M Series B to support regional expansion. Discuss the approved acquisition allocation for the next markets rather than assuming a percentage of the raise can go to ads.",
+          source: "Sample funding announcement",
+        },
+        {
+          id: "s44",
+          accountId: "juniper",
+          type: "Growth",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 7,
+          description:
+            "Two new markets are scheduled to open next month, with added fulfillment capacity. A serviceable-market launch plan could support a larger customer acquisition test.",
+          source: "Sample company expansion brief",
+        },
+        {
+          id: "s45",
+          accountId: "juniper",
+          type: "Hiring",
+          classification: "Opportunity",
+          urgency: "Medium",
+          age: 5,
+          description:
+            "A new Director of Acquisition starts next week. Include them in the test brief and confirm who can approve the next budget.",
+          source: "Sample hiring brief",
+        },
+        {
+          id: "s46",
+          accountId: "juniper",
+          type: "Measurement",
+          classification: "Risk",
+          urgency: "High",
+          age: 2,
+          description:
+            "The starter report has first-order counts but no repeat-order cohort. Validate customer quality and market coverage before claiming the pilot is ready to scale.",
+          source: "Sample conversion audit",
+        },
+        {
+          id: "s47",
+          accountId: "summit",
+          type: "Onboarding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 1,
+          description:
+            "Summit Stay completed onboarding yesterday with a $4K starter budget. Creative review and booking-event signoff remain before the first campaign can launch.",
+          source: "Sample onboarding notes",
+        },
+        {
+          id: "s48",
+          accountId: "summit",
+          type: "Funding",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 6,
+          description:
+            "Announced a $28M Series A for supply partnerships and growth. Ask which acquisition goals and media budgets have actually been approved.",
+          source: "Sample funding announcement",
+        },
+        {
+          id: "s49",
+          accountId: "summit",
+          type: "Growth",
+          classification: "Opportunity",
+          urgency: "High",
+          age: 3,
+          description:
+            "A new lodging supply partnership adds inventory ahead of a seasonal booking window. Confirm bookable availability and landing-page coverage before proposing the pilot scope.",
+          source: "Sample company expansion brief",
+        },
+        {
+          id: "s50",
+          accountId: "summit",
+          type: "Launch",
+          classification: "Opportunity",
+          urgency: "Medium",
+          age: 2,
+          description:
+            "The advertiser wants its first campaign ready before the seasonal planning window in 3 weeks. Align owners for budget, creative, inventory, and measurement.",
+          source: "Sample launch brief",
+        },
+        {
+          id: "s51",
+          accountId: "summit",
+          type: "Measurement",
+          classification: "Risk",
+          urgency: "High",
+          age: 1,
+          description:
+            "The completed-booking event and cancellation exclusions have not been approved. Establish one reporting definition before launch or budget expansion.",
+          source: "Sample conversion audit",
+        },
       ];
       const {
         createElement: h,
@@ -1673,6 +2123,10 @@
         Fragment,
       } = React;
       const SIGNAL_TYPES = [
+        "Onboarding",
+        "Funding",
+        "Growth",
+        "Hiring",
         "Performance",
         "Budget",
         "Creative",
@@ -1682,6 +2136,10 @@
         "Competition",
       ];
       const EMOJI = {
+        Onboarding: "👋",
+        Funding: "💸",
+        Growth: "🌱",
+        Hiring: "💼",
         Performance: "📈",
         Budget: "💰",
         Creative: "✦",
@@ -1704,7 +2162,7 @@
           .join("");
       const cpa = (a) => (a.conversions > 0 ? a.spend / a.conversions : null);
       const projected = (a) =>
-        a.status === "Planning"
+        a.status === "Planning" || a.onboardedDays <= 7
           ? null
           : (a.spend / a.daysElapsed) * a.periodDays;
       const urgencyClass = (u) =>
@@ -1725,6 +2183,46 @@
         );
 
       const PLAYBOOK = {
+        Onboarding: {
+          risk: "Resolve onboarding gaps with named owners before launch. Confirm budget approval, outcome definitions, and creative readiness.",
+          opportunity:
+            "Make the first campaign successful before discussing scale. Agree the starter budget, success measure, and a first learning checkpoint.",
+          steps: [
+            "Confirm the advertiser's goal, approved starter budget, and decision-makers.",
+            "Validate the conversion event and approved creative before launch.",
+            "Agree a first-campaign review; label early results as preliminary.",
+          ],
+        },
+        Funding: {
+          risk: "Clarify funding allocation and commercial constraints before presenting a spend proposal. A funding announcement is not an approved advertising budget.",
+          opportunity:
+            "Use the funding announcement to discover acquisition priorities and the available media allocation. Propose a bounded learning test rather than assuming the raise can fund ads.",
+          steps: [
+            "Ask which business goals the raise funds and who approves acquisition spend.",
+            "Confirm the available media allocation; do not infer it from the funding amount.",
+            "Scope a test budget, readiness checks, success measure, and review date.",
+          ],
+        },
+        Growth: {
+          risk: "Confirm operational capacity and launch coverage before proposing incremental acquisition spending.",
+          opportunity:
+            "Connect the company expansion to a specific customer acquisition need. Qualify serviceability and customer economics before proposing a new test.",
+          steps: [
+            "Confirm the new markets, product lines, or capacity requiring demand.",
+            "Check supply, margins, landing pages, and the intended customer outcome.",
+            "Agree a focused acquisition test and a budget approval owner.",
+          ],
+        },
+        Hiring: {
+          risk: "Resolve ownership gaps before making a commercial ask. A change in the growth team can delay budget and creative decisions.",
+          opportunity:
+            "Use growth-team hiring as a reason to offer a first-channel test plan. Confirm the team's priorities and approved spend instead of treating headcount as budget proof.",
+          steps: [
+            "Identify the incoming growth or acquisition owner and their goals.",
+            "Confirm the budget approver and onboarding support needs.",
+            "Prepare a test brief with one measurable outcome and a first review date.",
+          ],
+        },
         Performance: {
           risk: "Diagnose outcome quality before adding spend. Compare conversion definitions, cohort mix, landing pages and creative; agree a recovery checkpoint.",
           opportunity:
@@ -1806,14 +2304,29 @@
           ? "Resolve measurement first; use a reconciled baseline before making a performance or budget decision."
           : risk
             ? "Address the risks first, then sequence any growth tests once the account has an agreed baseline."
-            : "Validate the promising outcomes, then agree a controlled test with the budget owner.";
-        const angle =
+            : a.onboardedDays != null
+              ? "Use the company signals to discover approved acquisition priorities, then agree a bounded first test and a learning checkpoint. Early campaign data does not establish scalable performance."
+              : "Validate the promising outcomes, then agree a controlled test with the budget owner.";
+        const primaryAngle =
           list.length === 1
             ? PLAYBOOK[list[0].type][
                 list[0].classification === "Risk" ? "risk" : "opportunity"
               ]
             : lead;
-        const steps = [...new Set(list.flatMap((s) => PLAYBOOK[s.type].steps))];
+        const angle = a.spendOpportunity
+          ? primaryAngle + " Readiness gate: " + a.spendOpportunity.gate
+          : primaryAngle;
+        const steps = [
+          ...new Set([
+            ...list.flatMap((s) => PLAYBOOK[s.type].steps),
+            ...(a.spendOpportunity
+              ? [
+                  a.spendOpportunity.gate,
+                  "Confirm the incremental media allocation with the budget owner; the proposed test range is not approved spend.",
+                ]
+              : []),
+          ]),
+        ];
         const first = a.contactName.split(" ")[0];
         const details = list
           .map((s) => "• " + s.type + ": " + s.description)
@@ -1824,7 +2337,14 @@
             : list[0].type + " review") +
           " for " +
           a.name;
-        const body = `Hi ${first},\n\nI pulled together the following items for our ChatGPT advertising pilot discussion:\n\n${details}\n\nSuggested next step: ${angle}\n\nOur success measure is ${a.objective.toLowerCase()}, with a ${money(a.cpaGoal)} CPA goal. Can we align on the next action, the owner, and a review date? Any budget change would need your approval first.\n\nBest,\n[Your name]`;
+        const opportunity = a.spendOpportunity
+          ? `\n\nOnce those readiness checks are complete, we could discuss a ${money(a.spendOpportunity.low)}–${money(a.spendOpportunity.high)} next 30-day test budget. This is a proposal to validate with you, not an approved allocation or a performance forecast. Your current starter budget is ${money(a.budget)}.`
+          : "";
+        const onboarding =
+          a.onboardedDays != null
+            ? ` You onboarded ${a.onboardedDays} day${a.onboardedDays === 1 ? "" : "s"} ago, so we should treat any initial campaign results as preliminary.`
+            : "";
+        const body = `Hi ${first},\n\nI pulled together the following items for our ChatGPT advertising pilot discussion.${onboarding}\n\n${details}\n\nSuggested next step: ${angle}${opportunity}\n\nOur success measure is ${a.objective.toLowerCase()}, with a ${money(a.cpaGoal)} CPA goal. Can we align on the next action, the owner, and a review date? Any budget change would need your approval first.\n\nBest,\n[Your name]`;
         return { subject, body, angle, steps };
       }
       function Sidebar({ selectedId, onSelect }) {
@@ -1832,6 +2352,8 @@
           [query, setQuery] = useState("");
         const filters = [
           "All",
+          "Newly onboarded",
+          "Spend opportunity",
           "Active",
           "Pilot",
           "Planning",
@@ -1974,7 +2496,9 @@
               null,
               (a.status === "Planning"
                 ? "Proposed budget: "
-                : "Month-to-date spend: ") +
+                : a.onboardedDays != null
+                  ? "Starter test spend: "
+                  : "Month-to-date spend: ") +
                 money(a.spend) +
                 " / " +
                 money(a.budget),
@@ -1993,7 +2517,18 @@
             "div",
             { className: "contract-renewal" },
             projection === null
-              ? "Not launched · " + a.renewal
+              ? a.onboardedDays != null
+                ? "Onboarded " +
+                  a.onboardedDays +
+                  " day" +
+                  (a.onboardedDays === 1 ? "" : "s") +
+                  " ago · " +
+                  (a.spend > 0
+                    ? "Early data; no monthly projection"
+                    : "First campaign pending") +
+                  " · " +
+                  a.renewal
+                : "Not launched · " + a.renewal
               : "Day " +
                   a.daysElapsed +
                   " of " +
@@ -2002,6 +2537,46 @@
                   money(projection) +
                   " · " +
                   a.renewal,
+          ),
+        );
+      }
+      function SpendOpportunity({ account: a }) {
+        if (!a.spendOpportunity) return null;
+        const opportunity = a.spendOpportunity;
+        return h(
+          "div",
+          { className: "opportunity-card" },
+          h(
+            "div",
+            { className: "opportunity-kicker" },
+            "Spend opportunity · " + opportunity.horizon,
+          ),
+          h(
+            "div",
+            { className: "opportunity-value" },
+            money(opportunity.low) + "–" + money(opportunity.high),
+            h(
+              "span",
+              { className: "badge badge-prospect", style: { marginLeft: 8 } },
+              "Proposed; not approved",
+            ),
+          ),
+          h("p", { className: "opportunity-summary" }, opportunity.drivers),
+          h(
+            "p",
+            { className: "opportunity-summary" },
+            h("strong", null, "Funding: "),
+            a.funding,
+          ),
+          h(
+            "p",
+            { className: "opportunity-gate" },
+            "Before more spend: " + opportunity.gate,
+          ),
+          h(
+            "p",
+            { className: "opportunity-footnote" },
+            "Illustrative AM proposal. Company signals indicate a conversation opportunity; no campaign results or budget allocation are implied.",
           ),
         );
       }
@@ -2064,11 +2639,16 @@
               { className: "stats-row" },
               tile("Spend MTD", money(a.spend), "💰"),
               tile(a.objective, String(a.conversions), "↗"),
-              tile("CPA", cpa(a) === null ? "—" : money(cpa(a)), "🎯"),
+              tile(
+                a.onboardedDays != null ? "CPA (early)" : "CPA",
+                cpa(a) === null ? "—" : money(cpa(a)),
+                "🎯",
+              ),
               tile("CPA goal", money(a.cpaGoal), "◎"),
               tile("Campaigns", a.campaigns, "▤"),
             ),
             h(BudgetBar, { account: a }),
+            h(SpendOpportunity, { account: a }),
             h(
               "div",
               { className: "feed-contact" },
@@ -2442,6 +3022,7 @@
           h(
             "div",
             { className: "panel-body" },
+            h(SpendOpportunity, { account: a }),
             h(
               "div",
               null,

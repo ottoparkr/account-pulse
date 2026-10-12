@@ -4,13 +4,16 @@ A concept dashboard for an account manager overseeing multiple ChatGPT advertise
 
 ## Explore the prototype
 
-- Search eight fictional advertisers and filter by status or account priority.
+- Search twelve fictional advertisers and filter by status or account priority, including **Newly onboarded** and **Spend opportunity**.
 - Review monthly spend, outcome counts, CPA goals, and budget pacing.
-- Filter sample signals across performance, budget, creative, measurement, launches, relationships, and competition.
+- Filter sample signals across onboarding, funding, company growth, hiring, performance, budget, creative, measurement, launches, relationships, and competition.
+- Explore four newly onboarded accounts with funding announcements, launch and expansion plans, proposed next-test budgets, and account-specific readiness checks.
 - Generate a signal-specific action plan and editable advertiser email, or combine multiple signals into one plan.
 - Review stakeholder priorities, success criteria, and account strategy.
 
 All advertiser records, metrics, and reporting inputs are sample data. This is an independent concept, with no live ChatGPT advertising integration. Email addresses use the reserved `.example` domain; replace them before sending.
+
+Spend-opportunity ranges are illustrative proposals, not approved budgets or performance forecasts. Funding and company-growth signals support discovery; they do not establish available advertising allocation. Newly onboarded accounts label CPA as early and omit monthly projections during their first seven days.
 
 ## Run it
 
