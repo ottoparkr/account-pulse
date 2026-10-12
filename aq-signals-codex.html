@@ -1244,6 +1244,111 @@
         grid-template-columns: 1fr;
         gap: 8px;
       }
+      .quota-summary {
+        padding: 10px 20px;
+      }
+      .quota-summary .quota-heading {
+        margin-bottom: 0;
+        gap: 12px;
+      }
+      .quota-compact-attainment {
+        color: var(--primary);
+        font-size: 12px;
+      }
+      .quota-compact-track {
+        width: 130px;
+        margin-top: 0;
+        flex-shrink: 0;
+      }
+      .quota-toggle {
+        margin-left: auto;
+        padding: 5px 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 11px;
+        color: var(--fg2);
+      }
+      .quota-toggle:hover {
+        color: var(--fg);
+        background: var(--bg3);
+      }
+      .quota-toggle:focus-visible,
+      .opportunity-chip:focus-visible,
+      .budget-details-btn:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+      }
+      .quota-period {
+        margin: 10px 0;
+        font-size: 10px;
+        color: var(--fg2);
+      }
+      .compact-budget {
+        margin-top: 12px;
+      }
+      .compact-budget-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .compact-budget-text {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 3px;
+        font-size: 11px;
+      }
+      .compact-budget-label {
+        color: var(--fg2);
+        margin-right: 4px;
+      }
+      .compact-budget-text strong {
+        font-weight: 600;
+      }
+      .compact-budget-period {
+        font-size: 10px;
+        color: var(--fg2);
+        margin-left: 7px;
+      }
+      .compact-budget-awaiting {
+        color: var(--primary);
+        margin-left: 6px;
+      }
+      .compact-budget-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .compact-budget-track {
+        margin-top: 8px;
+      }
+      .opportunity-chip,
+      .budget-details-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--fg2);
+      }
+      .opportunity-chip {
+        color: var(--primary);
+        border-color: rgba(245, 188, 66, 0.3);
+        background: rgba(245, 188, 66, 0.06);
+      }
+      .opportunity-chip:hover {
+        background: rgba(245, 188, 66, 0.14);
+      }
+      .approved-chip {
+        color: var(--opp);
+        border-color: rgba(61, 186, 126, 0.3);
+        background: rgba(61, 186, 126, 0.06);
+      }
+      .budget-details-btn:hover {
+        color: var(--fg);
+        background: var(--bg3);
+      }
       .email-field-label {
         display: block;
       }
@@ -1273,6 +1378,26 @@
         }
       }
       @media (max-width: 760px) {
+        .quota-summary .quota-heading {
+          gap: 7px;
+        }
+        .quota-heading-label {
+          order: 0;
+        }
+        .quota-compact-attainment {
+          order: 1;
+        }
+        .quota-toggle {
+          order: 2;
+        }
+        .quota-compact-credit {
+          order: 3;
+          width: 100%;
+        }
+        .quota-compact-track {
+          order: 4;
+          width: 100%;
+        }
         .quota-dashboard {
           height: auto;
           min-height: 100vh;
@@ -2621,6 +2746,7 @@
         useState,
         useMemo,
         useEffect,
+        useRef,
         Fragment,
       } = React;
       const SIGNAL_TYPES = [
@@ -3078,6 +3204,25 @@
       const quotaRange = (low, high) =>
         low === high ? money(low) : money(low) + "–" + money(high);
       function QuotaSummary() {
+        const [expanded, setExpanded] = useState(() => {
+          try {
+            return (
+              localStorage.getItem("advertiser-pulse.quota-expanded") === "true"
+            );
+          } catch {
+            return false;
+          }
+        });
+        useEffect(() => {
+          try {
+            localStorage.setItem(
+              "advertiser-pulse.quota-expanded",
+              String(expanded),
+            );
+          } catch {
+            /* Storage may be unavailable for locally opened HTML. */
+          }
+        }, [expanded]);
         const totals = quotaTotals();
         const expectedFinish = totals.actual + totals.expectedAdditional;
         const attainment = quotaPercent(totals.actual);
@@ -3089,146 +3234,183 @@
           h(
             "div",
             { className: "quota-heading" },
-            h("strong", null, "Your quarterly quota · " + quotaPlan.name),
+            h(
+              "strong",
+              { className: "quota-heading-label" },
+              "Quota · " + quotaPlan.name,
+            ),
+            h(
+              "strong",
+              { className: "quota-compact-attainment" },
+              attainment.toFixed(1) + "% attained",
+            ),
             h(
               "span",
-              null,
+              { className: "quota-compact-credit" },
+              money(totals.actual) +
+                " / " +
+                money(quotaPlan.target) +
+                " delivered",
+            ),
+            h(
+              "div",
+              {
+                className: "quota-track quota-compact-track",
+                role: "progressbar",
+                "aria-label": "Quarterly quota attainment",
+                "aria-valuemin": 0,
+                "aria-valuemax": 100,
+                "aria-valuenow": Math.min(100, attainment),
+                "aria-valuetext":
+                  money(totals.actual) +
+                  " delivered toward " +
+                  money(quotaPlan.target) +
+                  " quota (" +
+                  attainment.toFixed(1) +
+                  "%)",
+              },
+              h("div", { style: { width: Math.min(100, attainment) + "%" } }),
+            ),
+            h(
+              "button",
+              {
+                className: "quota-toggle",
+                "aria-label": "Quota details",
+                "aria-expanded": expanded,
+                "aria-controls": "quota-details-panel",
+                onClick: () => setExpanded((open) => !open),
+              },
+              expanded ? "Hide quota ▴" : "Show quota ▾",
+            ),
+          ),
+          h(
+            "div",
+            { id: "quota-details-panel", hidden: !expanded },
+            h(
+              "p",
+              { className: "quota-period" },
               dateLabel(quotaPlan.start) +
                 " – " +
                 dateLabel(quotaPlan.end) +
                 " · Sample as of " +
                 dateLabel(quotaPlan.snapshot),
             ),
-          ),
-          h(
-            "div",
-            { className: "quota-grid" },
             h(
               "div",
-              { className: "quota-metric" },
-              h("span", { className: "quota-label" }, "Actual attainment"),
+              { className: "quota-grid" },
               h(
-                "strong",
-                { className: "quota-attainment" },
-                attainment.toFixed(1) + "%",
-              ),
-              h(
-                "p",
-                null,
-                h("span", { className: "quota-actual" }, money(totals.actual)),
-                " / " + money(quotaPlan.target) + " credited",
+                "div",
+                { className: "quota-metric" },
+                h("span", { className: "quota-label" }, "Actual attainment"),
+                h(
+                  "strong",
+                  { className: "quota-attainment" },
+                  attainment.toFixed(1) + "%",
+                ),
+                h(
+                  "p",
+                  null,
+                  h(
+                    "span",
+                    { className: "quota-actual" },
+                    money(totals.actual),
+                  ),
+                  " / " + money(quotaPlan.target) + " credited",
+                ),
               ),
               h(
                 "div",
-                {
-                  className: "quota-track",
-                  role: "progressbar",
-                  "aria-label": "Quarterly quota attainment",
-                  "aria-valuemin": 0,
-                  "aria-valuemax": 100,
-                  "aria-valuenow": Math.min(100, attainment),
-                  "aria-valuetext":
+                { className: "quota-metric" },
+                h("span", { className: "quota-label" }, "Remaining quota"),
+                h("strong", { className: "quota-gap" }, money(remaining)),
+                h(
+                  "p",
+                  null,
+                  remaining > 0
+                    ? "Gap based on delivered spend"
+                    : "Quota met on delivered spend",
+                ),
+              ),
+              h(
+                "div",
+                { className: "quota-metric" },
+                h(
+                  "span",
+                  { className: "quota-label" },
+                  "Expected finish · Forecast",
+                ),
+                h(
+                  "strong",
+                  { className: "quota-expected-finish" },
+                  money(expectedFinish),
+                ),
+                h(
+                  "p",
+                  { className: "quota-expected-attainment" },
+                  quotaPercent(expectedFinish).toFixed(1) +
+                    "% if forecast delivers",
+                ),
+                h(
+                  "p",
+                  { className: "quota-forecast-gap" },
+                  forecastGap > 0
+                    ? "Forecast gap: " + money(forecastGap)
+                    : "Forecast reaches quota",
+                ),
+              ),
+              h(
+                "div",
+                { className: "quota-metric" },
+                h(
+                  "span",
+                  { className: "quota-label" },
+                  "Open upsell pipeline · This quarter",
+                ),
+                h(
+                  "strong",
+                  { className: "quota-pipeline" },
+                  quotaRange(totals.pipelineLow, totals.pipelineHigh),
+                ),
+                h("p", null, "Unapproved · Excluded from expected finish"),
+              ),
+            ),
+            h(
+              "details",
+              { className: "quota-details" },
+              h("summary", null, "Credit policy & forecast breakdown"),
+              h(
+                "div",
+                { className: "quota-details-body" },
+                h("p", null, quotaPlan.creditPolicy),
+                h(
+                  "p",
+                  null,
+                  "Expected finish = " +
                     money(totals.actual) +
-                    " delivered toward " +
-                    money(quotaPlan.target) +
-                    " quota (" +
-                    attainment.toFixed(1) +
-                    "%)",
-                },
-                h("div", { style: { width: Math.min(100, attainment) + "%" } }),
-              ),
-            ),
-            h(
-              "div",
-              { className: "quota-metric" },
-              h("span", { className: "quota-label" }, "Remaining quota"),
-              h("strong", { className: "quota-gap" }, money(remaining)),
-              h(
-                "p",
-                null,
-                remaining > 0
-                  ? "Gap based on delivered spend"
-                  : "Quota met on delivered spend",
-              ),
-            ),
-            h(
-              "div",
-              { className: "quota-metric" },
-              h(
-                "span",
-                { className: "quota-label" },
-                "Expected finish · Forecast",
-              ),
-              h(
-                "strong",
-                { className: "quota-expected-finish" },
-                money(expectedFinish),
-              ),
-              h(
-                "p",
-                { className: "quota-expected-attainment" },
-                quotaPercent(expectedFinish).toFixed(1) +
-                  "% if forecast delivers",
-              ),
-              h(
-                "p",
-                { className: "quota-forecast-gap" },
-                forecastGap > 0
-                  ? "Forecast gap: " + money(forecastGap)
-                  : "Forecast reaches quota",
-              ),
-            ),
-            h(
-              "div",
-              { className: "quota-metric" },
-              h(
-                "span",
-                { className: "quota-label" },
-                "Open upsell pipeline · This quarter",
-              ),
-              h(
-                "strong",
-                { className: "quota-pipeline" },
-                quotaRange(totals.pipelineLow, totals.pipelineHigh),
-              ),
-              h("p", null, "Unapproved · Excluded from expected finish"),
-            ),
-          ),
-          h(
-            "details",
-            { className: "quota-details" },
-            h("summary", null, "Credit policy & forecast breakdown"),
-            h(
-              "div",
-              { className: "quota-details-body" },
-              h("p", null, quotaPlan.creditPolicy),
-              h(
-                "p",
-                null,
-                "Expected finish = " +
-                  money(totals.actual) +
-                  " delivered + " +
-                  money(totals.expectedAdditional) +
-                  " additional delivery forecast before " +
-                  dateLabel(quotaPlan.end) +
-                  ". Forecast amounts are sample assumptions within approved budgets, not earned credit.",
-              ),
-              h(
-                "p",
-                { className: "quota-future-pipeline" },
-                "Future-test upsell pipeline: " +
-                  quotaRange(totals.futureLow, totals.futureHigh) +
-                  " incremental above current starter budgets. These future tests are excluded from this quarter’s pipeline and forecast.",
-              ),
-              h(
-                "p",
-                null,
-                "Quarter-to-date records include earlier months. Selecting or filtering an account does not change the portfolio quota.",
+                    " delivered + " +
+                    money(totals.expectedAdditional) +
+                    " additional delivery forecast before " +
+                    dateLabel(quotaPlan.end) +
+                    ". Forecast amounts are sample assumptions within approved budgets, not earned credit.",
+                ),
+                h(
+                  "p",
+                  { className: "quota-future-pipeline" },
+                  "Future-test upsell pipeline: " +
+                    quotaRange(totals.futureLow, totals.futureHigh) +
+                    " incremental above current starter budgets. These future tests are excluded from this quarter’s pipeline and forecast.",
+                ),
+                h(
+                  "p",
+                  null,
+                  "Quarter-to-date records include earlier months. Selecting or filtering an account does not change the portfolio quota.",
+                ),
               ),
             ),
           ),
         );
       }
+
       function AccountQuota({ account: a }) {
         const actual = quotaActual(a),
           additional = quotaRemainingForecast(a),
@@ -3402,7 +3584,7 @@
             {
               className: "contract-bar",
               role: "progressbar",
-              "aria-label": "Approved budget consumed",
+              "aria-label": "Budget consumption details",
               "aria-valuemin": 0,
               "aria-valuemax": 100,
               "aria-valuenow": Math.min(100, pct),
@@ -3569,7 +3751,173 @@
           ),
         );
       }
-      function Feed({ account: a, onDraft, onIntel, panelKind }) {
+      const shortMoney = (n) =>
+        new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          notation: "compact",
+          maximumFractionDigits: 1,
+        }).format(n);
+      const shortDate = (date) =>
+        new Date(date + "T12:00:00Z").toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          timeZone: "UTC",
+        });
+      function CompactSpend({ account: a, onOpenContext }) {
+        const total = approvedBudget(a);
+        const agreement = a.budgetAgreement;
+        const pct = total === null ? 0 : Math.round((a.spend / total) * 100);
+        const over = total === null ? 0 : Math.max(0, a.spend - total);
+        const remaining = total === null ? 0 : Math.max(0, total - a.spend);
+        const proposal = a.upsellProposal;
+        const nextTest = a.spendOpportunity;
+        return h(
+          "div",
+          { className: "compact-budget" },
+          h(
+            "div",
+            { className: "compact-budget-row" },
+            h(
+              "div",
+              { className: "compact-budget-text" },
+              h(
+                "span",
+                { className: "compact-budget-label" },
+                total === null
+                  ? "Proposed starter budget"
+                  : agreement.kind === "Monthly"
+                    ? "Month-to-date spend"
+                    : "Starter test spend",
+              ),
+              total === null
+                ? h(
+                    Fragment,
+                    null,
+                    h("strong", null, shortMoney(a.budget)),
+                    h(
+                      "span",
+                      { className: "compact-budget-awaiting" },
+                      "Awaiting approval",
+                    ),
+                  )
+                : h(
+                    Fragment,
+                    null,
+                    h(
+                      "strong",
+                      { className: "compact-spent" },
+                      shortMoney(a.spend),
+                    ),
+                    " / ",
+                    h(
+                      "strong",
+                      { className: "compact-approved" },
+                      shortMoney(total),
+                    ),
+                    h("span", null, " approved"),
+                    h(
+                      "span",
+                      {
+                        className:
+                          "compact-remaining" + (over ? " budget-over" : ""),
+                      },
+                      " · " +
+                        shortMoney(over || remaining) +
+                        (over ? " over budget" : " remaining"),
+                    ),
+                    h(
+                      "span",
+                      { className: "compact-percent" },
+                      " · " + pct + "%",
+                    ),
+                  ),
+              h(
+                "span",
+                { className: "compact-budget-period" },
+                shortDate(agreement.start) + "–" + shortDate(agreement.end),
+              ),
+            ),
+            h(
+              "div",
+              { className: "compact-budget-actions" },
+              proposal &&
+                h(
+                  "button",
+                  {
+                    className: "opportunity-chip",
+                    onClick: () => onOpenContext("opportunity"),
+                    "aria-label": "View proposed upsell details",
+                  },
+                  "+" + shortMoney(proposal.amount) + " proposed ↗",
+                ),
+              nextTest &&
+                h(
+                  "button",
+                  {
+                    className: "opportunity-chip",
+                    onClick: () => onOpenContext("opportunity"),
+                    "aria-label": "View next-test proposal details",
+                  },
+                  "Next test " +
+                    shortMoney(nextTest.low) +
+                    "–" +
+                    shortMoney(nextTest.high) +
+                    " proposed ↗",
+                ),
+              expansionIncluded(a) &&
+                h(
+                  "button",
+                  {
+                    className: "opportunity-chip approved-chip",
+                    onClick: () => onOpenContext("budget"),
+                    "aria-label": "View approved expansion details",
+                  },
+                  "+" + shortMoney(a.approvedExpansion.amount) + " approved ↗",
+                ),
+              h(
+                "button",
+                {
+                  className: "budget-details-btn",
+                  onClick: () => onOpenContext("budget"),
+                },
+                "Budget details ↗",
+              ),
+            ),
+          ),
+          total !== null &&
+            h(
+              "div",
+              {
+                className: "contract-bar compact-budget-track",
+                role: "progressbar",
+                "aria-label": "Approved budget consumed",
+                "aria-valuemin": 0,
+                "aria-valuemax": 100,
+                "aria-valuenow": Math.min(100, pct),
+                "aria-valuetext":
+                  money(a.spend) +
+                  " spent of " +
+                  money(total) +
+                  " approved (" +
+                  pct +
+                  "%)",
+              },
+              h("div", {
+                className: "budget-fill" + (over ? " budget-over-fill" : ""),
+                style: { width: Math.min(100, pct) + "%" },
+              }),
+            ),
+        );
+      }
+
+      function Feed({
+        account: a,
+        onDraft,
+        onIntel,
+        onOpenContext,
+        panelKind,
+      }) {
         const [filter, setFilter] = useState("All"),
           [checked, setChecked] = useState({});
         const list = signals
@@ -3626,18 +3974,6 @@
             h(
               "div",
               { className: "stats-row" },
-              tile(
-                a.budgetAgreement.kind === "Monthly"
-                  ? "Spend MTD"
-                  : "Test spend",
-                money(a.spend),
-                "💰",
-              ),
-              tile(
-                "Approved budget",
-                approvedBudget(a) === null ? "—" : money(approvedBudget(a)),
-                "◎",
-              ),
               tile(a.objective, String(a.conversions), "↗"),
               tile(
                 a.onboardedDays != null ? "CPA (early)" : "CPA",
@@ -3647,14 +3983,7 @@
               tile("CPA goal", money(a.cpaGoal), "◎"),
               tile("Campaigns", a.campaigns, "▤"),
             ),
-            h(AccountQuota, { account: a }),
-            h(BudgetBar, { account: a }),
-            h(SpendOpportunity, { account: a }),
-            h(
-              "div",
-              { className: "feed-contact" },
-              "Sample data · Budget consumed measures spend; review CPA and outcome quality alongside it.",
-            ),
+            h(CompactSpend, { account: a, onOpenContext }),
           ),
           h(
             "div",
@@ -4001,7 +4330,20 @@
           ),
         );
       }
-      function ContextPanel({ account: a, onClose }) {
+      function ContextPanel({ account: a, onClose, initialSection, request }) {
+        const bodyRef = useRef(null);
+        useEffect(() => {
+          const body = bodyRef.current;
+          const target = body?.querySelector(
+            '[data-context-section="' + (initialSection || "budget") + '"]',
+          );
+          if (body && target) {
+            body.scrollTop +=
+              target.getBoundingClientRect().top -
+              body.getBoundingClientRect().top -
+              16;
+          }
+        }, [a.id, initialSection, request]);
         return h(
           "aside",
           { className: "panel fade-in" },
@@ -4022,9 +4364,22 @@
           ),
           h(
             "div",
-            { className: "panel-body" },
-            h(AccountQuota, { account: a }),
-            h(SpendOpportunity, { account: a }),
+            { className: "panel-body", ref: bodyRef },
+            h(
+              "div",
+              { "data-context-section": "budget" },
+              h(BudgetBar, { account: a }),
+            ),
+            h(
+              "div",
+              { "data-context-section": "contribution" },
+              h(AccountQuota, { account: a }),
+            ),
+            h(
+              "div",
+              { "data-context-section": "opportunity" },
+              h(SpendOpportunity, { account: a }),
+            ),
             h(
               "div",
               null,
@@ -4148,6 +4503,12 @@
               onDraft: (ids) => setPanel({ kind: "plan", ids }),
               onIntel: () =>
                 setPanel(panel?.kind === "intel" ? null : { kind: "intel" }),
+              onOpenContext: (section) =>
+                setPanel((previous) => ({
+                  kind: "intel",
+                  section,
+                  request: (previous?.request || 0) + 1,
+                })),
             }),
             panel &&
               (panel.kind === "plan"
@@ -4156,7 +4517,12 @@
                     ids: panel.ids,
                     onClose: () => setPanel(null),
                   })
-                : h(ContextPanel, { account, onClose: () => setPanel(null) })),
+                : h(ContextPanel, {
+                    account,
+                    initialSection: panel.section,
+                    request: panel.request,
+                    onClose: () => setPanel(null),
+                  })),
           ),
         );
       }

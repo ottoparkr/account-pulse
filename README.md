@@ -5,14 +5,14 @@ A concept dashboard for an account manager overseeing multiple ChatGPT advertise
 ## Explore the prototype
 
 - Search twelve fictional advertisers and filter by status or account priority, including **Newly onboarded** and **Spend opportunity**.
-- Review spend against the approved monthly or starter-test budget, with explicit period dates, spent/remaining amounts, approval details, and pacing. Unapproved proposals show no consumption bar.
+- Scan a compact spend row and thin budget bar alongside performance metrics. Opportunity and approved-expansion badges open the relevant Account context section. Detailed periods, approvals, pacing, and forecasts stay in that panel. Unapproved budgets show no consumption bar.
 - Compare Northstar's proposed $20K incremental upsell (excluded from its $60K approved budget) with Bloom's approved $15K expansion ($45K original + $15K approved = $60K current budget).
 - Filter sample signals across onboarding, funding, company growth, hiring, performance, budget, creative, measurement, launches, relationships, and competition.
 - Explore four newly onboarded accounts with funding announcements, launch and expansion plans, proposed next-test budgets, and account-specific readiness checks.
 - Generate a signal-specific action plan and editable advertiser email, or combine multiple signals into one plan.
 - Review stakeholder priorities, success criteria, and account strategy.
-- Track a sample $400K quarterly quota using separate quarter-to-date delivered-spend records, expected remaining delivery, and unapproved upsell pipeline. Account selection and filters do not change portfolio totals.
-- See each advertiser's quarterly contribution and forecast basis. Proposed next-test budgets are compared with their current starter-budget baseline to show incremental potential, with future-test opportunities kept outside the current-quarter pipeline.
+- Track a sample $400K quarterly quota in a collapsible top bar. It starts collapsed with attainment visible; **Show quota** opens the full forecast and pipeline breakdown. Expansion preference is remembered locally when browser storage is available. Account selection and filters do not change portfolio totals.
+- Review each advertiser's quarterly contribution and forecast basis in **Account context**. Proposed next-test budgets are compared with their current starter-budget baseline to show incremental potential, with future-test opportunities kept outside the current-quarter pipeline.
 
 All advertiser records, metrics, and reporting inputs are sample data. This is an independent concept, with no live ChatGPT advertising integration. Email addresses use the reserved `.example` domain; replace them before sending.
 
