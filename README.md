@@ -1,47 +1,29 @@
-# AfterQuery Signals Intelligence
+# Advertiser Pulse
 
-A signal-driven account intelligence tool built to answer one question: **what's happening with this account right now, and what should I do about it?**
+A concept dashboard for an account manager overseeing multiple ChatGPT advertisers. It keeps the original three-column account intelligence layout and adapts it to advertiser portfolios, campaign outcomes, budget pacing, and account planning.
 
-## What it does
+## Explore the prototype
 
-AfterQuery Signals pulls real-time signals across an account portfolio — funding rounds, hiring patterns, usage anomalies, competitive moves, relationship health — and surfaces them with two outputs:
+- Search eight fictional advertisers and filter by status or account priority.
+- Review monthly spend, outcome counts, CPA goals, and budget pacing.
+- Filter sample signals across performance, budget, creative, measurement, launches, relationships, and competition.
+- Generate a signal-specific action plan and editable advertiser email, or combine multiple signals into one plan.
+- Review stakeholder priorities, success criteria, and account strategy.
 
-1. **Outreach draft** — a signal-specific email ready to send, with editable subject, body, and talking points
-2. **Relationship intel** — POC profiles with sentiment, communication patterns, and AM coaching notes
+All advertiser records, metrics, and reporting inputs are sample data. This is an independent concept, with no live ChatGPT advertising integration. Email addresses use the reserved `.example` domain; replace them before sending.
 
-The tool is designed for CS and sales teams managing complex accounts where timing is everything. A funding signal at the wrong moment is noise. The same signal paired with a contract renewal 90 days out is an expansion conversation.
+## Run it
 
-## Why I built this
+No build step or npm installation is required. Serve the checkout with Python:
 
-I built this as a forcing function for how I think about account coverage.
-
-Most signal tools tell you what happened. They don't tell you what to do. The gap is context: who are you talking to, what do they actually care about, where are you in the contract cycle, and what's the highest-leverage move right now.
-
-This tool connects those dots. The outreach logic isn't LLM-generated filler — it's templated reasoning that mirrors how a senior CS leader actually thinks about signal response. A competitor signal on a churn-risk account with 4 months to renewal hits differently than the same signal on a healthy expansion account, and the outreach reflects that.
-
-## How to run it
-
-No build step. No dependencies to install.
-
-```
-open index.html
+```sh
+python3 -m http.server 8000 --directory .
 ```
 
-Or drop it into any static file host (GitHub Pages, Vercel, etc.).
+Open `aq-signals-codex.html` from the server. The source version loads React 18.3.1 and ReactDOM from cdnjs.cloudflare.com, so that host must be accessible.
+
+The downloadable standalone version embeds React and ReactDOM and can render without network access. Save it as an `.html` file and open it in a browser. Changes made to source here do not automatically update previously downloaded copies. Draft edits are temporary and reset when switching signals or reloading.
 
 ## Stack
 
-- React 18 (CDN, no bundler)
-- Vanilla JS — all logic inlined, no framework
-- CSS custom properties for the design system
-- Zero npm dependencies
-
-## What it demonstrates
-
-- How I think about account segmentation and signal prioritization
-- Outreach logic that accounts for contract stage, relationship health, and signal type combinations
-- A working prototype built fast, without engineering resources
-
----
-
-Built by Otto Rojanapairat as a work sample for the OpenAI SMB Innovation Sales and Strategy Lead role.
+React 18 via CDN, inline JavaScript, and CSS custom properties. The application remains in `aq-signals-codex.html`.
