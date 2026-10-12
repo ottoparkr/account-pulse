@@ -1090,6 +1090,160 @@
         margin-top: 5px;
         color: var(--fg2);
       }
+      .quota-dashboard {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .quota-dashboard .app {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+      }
+      .sidebar,
+      .feed,
+      .panel {
+        height: 100%;
+      }
+      .feed {
+        overflow-y: auto;
+      }
+      .feed-header,
+      .filter-bar,
+      .signal-list,
+      .multi-btn-row {
+        flex-shrink: 0;
+      }
+      .signal-list {
+        flex: none;
+        overflow: visible;
+      }
+      .multi-btn-row {
+        position: sticky;
+        bottom: 0;
+        z-index: 1;
+        background: var(--bg);
+      }
+      .quota-summary {
+        flex-shrink: 0;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 20px 10px;
+      }
+      .quota-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .quota-heading strong {
+        font-size: 12px;
+      }
+      .quota-heading span {
+        font-size: 10px;
+        color: var(--fg2);
+      }
+      .quota-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .quota-metric {
+        min-width: 0;
+        border-left: 1px solid var(--border);
+        padding-left: 16px;
+      }
+      .quota-metric:first-child {
+        border-left: 0;
+        padding-left: 0;
+      }
+      .quota-label {
+        display: block;
+        font-size: 10px;
+        color: var(--fg2);
+        margin-bottom: 4px;
+      }
+      .quota-metric > strong {
+        display: block;
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .quota-metric p {
+        font-size: 10px;
+        line-height: 1.5;
+        color: var(--fg2);
+        margin-top: 3px;
+      }
+      .quota-attainment {
+        color: var(--primary);
+      }
+      .quota-track {
+        margin-top: 6px;
+        height: 4px;
+        background: var(--bg4);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .quota-track > div {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 2px;
+      }
+      .quota-details {
+        font-size: 10px;
+        color: var(--fg2);
+        margin-top: 8px;
+      }
+      .quota-details summary {
+        cursor: pointer;
+      }
+      .quota-details-body {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 16px;
+        line-height: 1.5;
+      }
+      .account-quota {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg2);
+      }
+      .account-quota-title {
+        font-size: 10px;
+        color: var(--fg2);
+        font-weight: 600;
+        margin-bottom: 7px;
+      }
+      .account-quota-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .account-quota-grid span,
+      .account-quota-grid small {
+        display: block;
+        font-size: 10px;
+        color: var(--fg2);
+        line-height: 1.4;
+      }
+      .account-quota-grid strong {
+        display: block;
+        font-size: 15px;
+        margin: 3px 0;
+        font-weight: 600;
+      }
+      .panel .account-quota-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
       .email-field-label {
         display: block;
       }
@@ -1119,6 +1273,31 @@
         }
       }
       @media (max-width: 760px) {
+        .quota-dashboard {
+          height: auto;
+          min-height: 100vh;
+          overflow: visible;
+        }
+        .quota-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+        .quota-metric:nth-child(3) {
+          border-left: 0;
+          padding-left: 0;
+        }
+        .quota-summary {
+          padding: 12px;
+        }
+        .quota-metric > strong {
+          font-size: 20px;
+        }
+        .quota-details-body {
+          grid-template-columns: 1fr;
+        }
+        .account-quota-grid {
+          gap: 7px;
+        }
         body {
           overflow: auto;
           height: auto;
@@ -1163,6 +1342,17 @@
   <body>
     <div id="root"></div>
     <script>
+      const quotaPlan = {
+        id: "2026-Q3",
+        name: "Q3 2026",
+        start: "2026-07-01",
+        end: "2026-09-30",
+        snapshot: "2026-09-18",
+        target: 400000,
+        creditRate: 1,
+        creditPolicy:
+          "100% of delivered ad spend on assigned accounts earns quota credit. Approved budgets and proposed upsells earn no credit until spend delivers.",
+      };
       const accounts = [
         {
           id: "northstar",
@@ -1218,6 +1408,14 @@
               "Booking CPA is below goal, and two approved creative variants could support a controlled expansion.",
             gate: "Reconcile the booking count and obtain Maya’s written approval before adding the proposed $20K to this month’s budget.",
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 62000,
+            expectedAdditional: 18000,
+            forecastReason:
+              "Booking reconciliation and approved budget support a cautious delivery estimate; the proposed $20K increase is excluded.",
+            pipelineScope: "This quarter",
+          },
         },
         {
           id: "haven",
@@ -1265,6 +1463,14 @@
             approvedBy: "Alex Morgan",
             approvedOn: "2026-08-28",
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 46000,
+            expectedAdditional: 12000,
+            forecastReason:
+              "Lower delivery assumption while purchase CPA and creative performance are being reviewed.",
+            pipelineScope: null,
+          },
         },
         {
           id: "trail",
@@ -1304,6 +1510,14 @@
             snapshot: "2026-09-18",
             approvedBy: "Jordan Lee",
             approvedOn: "2026-08-28",
+          },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 26000,
+            expectedAdditional: 9500,
+            forecastReason:
+              "Remaining approved pilot spend expected to deliver before the seasonal launch checkpoint.",
+            pipelineScope: null,
           },
         },
         {
@@ -1353,6 +1567,14 @@
             approvedBy: "Priya Shah",
             approvedOn: "2026-08-28",
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 34000,
+            expectedAdditional: 9000,
+            forecastReason:
+              "Conservative delivery estimate while lead quality and measurement are reconciled.",
+            pipelineScope: null,
+          },
         },
         {
           id: "bloom",
@@ -1401,6 +1623,14 @@
             effectiveOn: "2026-09-17",
             note: "A bounded expansion of the existing first-purchase campaign, within the current monthly period.",
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 48000,
+            expectedAdditional: 23000,
+            forecastReason:
+              "Expected delivery from the current $60K approved budget, including its effective expansion; budget approval itself earns no credit.",
+            pipelineScope: null,
+          },
         },
         {
           id: "atlas",
@@ -1440,6 +1670,14 @@
             snapshot: "2026-09-18",
             approvedBy: "Chris Park",
             approvedOn: "2026-08-28",
+          },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 34000,
+            expectedAdditional: 8500,
+            forecastReason:
+              "Delivery assumption depends on the new channel owner maintaining the approved test.",
+            pipelineScope: null,
           },
         },
         {
@@ -1482,6 +1720,14 @@
             approvedBy: null,
             approvedOn: null,
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 0,
+            expectedAdditional: 0,
+            forecastReason:
+              "No approved budget or delivered spend. The proposed launch budget is excluded from the forecast.",
+            pipelineScope: null,
+          },
         },
         {
           id: "fresh",
@@ -1522,6 +1768,14 @@
             snapshot: "2026-09-18",
             approvedBy: "Morgan Diaz",
             approvedOn: "2026-08-28",
+          },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 20000,
+            expectedAdditional: 6500,
+            forecastReason:
+              "Expected delivery from the approved pilot; follow repeat-order quality at the next checkpoint.",
+            pipelineScope: null,
           },
         },
         {
@@ -1581,6 +1835,14 @@
             approvedBy: "Owen Brooks",
             approvedOn: "2026-09-17",
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 0,
+            expectedAdditional: 1500,
+            forecastReason:
+              "Small first-test delivery assumption before September 30. The future $10K–$15K test proposal is excluded.",
+            pipelineScope: "Future test",
+          },
         },
         {
           id: "solace",
@@ -1639,6 +1901,14 @@
             approvedBy: "Imani Reed",
             approvedOn: "2026-09-13",
           },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 480,
+            expectedAdditional: 2000,
+            forecastReason:
+              "Early-stage delivery estimate from the existing starter budget, pending creative approval; no proposed increase is included.",
+            pipelineScope: "Future test",
+          },
         },
         {
           id: "juniper",
@@ -1695,6 +1965,14 @@
             snapshot: "2026-09-18",
             approvedBy: "Rafael Torres",
             approvedOn: "2026-09-13",
+          },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 1200,
+            expectedAdditional: 2800,
+            forecastReason:
+              "Conservative first-test delivery assumption before September 30 while serviceability and retention reporting are confirmed.",
+            pipelineScope: "Future test",
           },
         },
         {
@@ -1753,6 +2031,14 @@
             snapshot: "2026-09-18",
             approvedBy: "Avery Shah",
             approvedOn: "2026-09-18",
+          },
+          quota: {
+            periodId: "2026-Q3",
+            deliveredSpend: 0,
+            expectedAdditional: 1000,
+            forecastReason:
+              "Small starter-test delivery assumption before September 30, dependent on launch readiness; future test proposals are excluded.",
+            pipelineScope: "Future test",
           },
         },
       ];
@@ -2725,6 +3011,288 @@
           ),
         );
       }
+      const quotaPercent = (amount) =>
+        quotaPlan.target > 0 ? (amount / quotaPlan.target) * 100 : 0;
+      const quotaActual = (a) =>
+        a.quota?.periodId === quotaPlan.id
+          ? Math.max(0, a.quota.deliveredSpend) * quotaPlan.creditRate
+          : 0;
+      const quotaRemainingForecast = (a) => {
+        const approved = approvedBudget(a);
+        if (
+          a.quota?.periodId !== quotaPlan.id ||
+          approved === null ||
+          a.budgetAgreement.start > quotaPlan.end ||
+          a.budgetAgreement.end < quotaPlan.snapshot
+        )
+          return 0;
+        return (
+          Math.min(
+            Math.max(0, a.quota.expectedAdditional),
+            Math.max(0, approved - a.spend),
+          ) * quotaPlan.creditRate
+        );
+      };
+      const quotaOpportunity = (a) => {
+        if (a.quota?.periodId !== quotaPlan.id)
+          return { low: 0, high: 0, scope: null };
+        if (a.upsellProposal)
+          return {
+            low: a.upsellProposal.amount,
+            high: a.upsellProposal.amount,
+            scope: a.quota.pipelineScope,
+          };
+        if (a.spendOpportunity)
+          return {
+            low: Math.max(0, a.spendOpportunity.low - a.budget),
+            high: Math.max(0, a.spendOpportunity.high - a.budget),
+            scope: a.quota.pipelineScope,
+          };
+        return { low: 0, high: 0, scope: null };
+      };
+      function quotaTotals() {
+        return accounts.reduce(
+          (totals, a) => {
+            totals.actual += quotaActual(a);
+            totals.expectedAdditional += quotaRemainingForecast(a);
+            const opportunity = quotaOpportunity(a);
+            if (opportunity.scope === "This quarter") {
+              totals.pipelineLow += opportunity.low;
+              totals.pipelineHigh += opportunity.high;
+            } else if (opportunity.scope === "Future test") {
+              totals.futureLow += opportunity.low;
+              totals.futureHigh += opportunity.high;
+            }
+            return totals;
+          },
+          {
+            actual: 0,
+            expectedAdditional: 0,
+            pipelineLow: 0,
+            pipelineHigh: 0,
+            futureLow: 0,
+            futureHigh: 0,
+          },
+        );
+      }
+      const quotaRange = (low, high) =>
+        low === high ? money(low) : money(low) + "–" + money(high);
+      function QuotaSummary() {
+        const totals = quotaTotals();
+        const expectedFinish = totals.actual + totals.expectedAdditional;
+        const attainment = quotaPercent(totals.actual);
+        const remaining = Math.max(0, quotaPlan.target - totals.actual);
+        const forecastGap = Math.max(0, quotaPlan.target - expectedFinish);
+        return h(
+          "section",
+          { className: "quota-summary", "aria-label": "Portfolio quota" },
+          h(
+            "div",
+            { className: "quota-heading" },
+            h("strong", null, "Your quarterly quota · " + quotaPlan.name),
+            h(
+              "span",
+              null,
+              dateLabel(quotaPlan.start) +
+                " – " +
+                dateLabel(quotaPlan.end) +
+                " · Sample as of " +
+                dateLabel(quotaPlan.snapshot),
+            ),
+          ),
+          h(
+            "div",
+            { className: "quota-grid" },
+            h(
+              "div",
+              { className: "quota-metric" },
+              h("span", { className: "quota-label" }, "Actual attainment"),
+              h(
+                "strong",
+                { className: "quota-attainment" },
+                attainment.toFixed(1) + "%",
+              ),
+              h(
+                "p",
+                null,
+                h("span", { className: "quota-actual" }, money(totals.actual)),
+                " / " + money(quotaPlan.target) + " credited",
+              ),
+              h(
+                "div",
+                {
+                  className: "quota-track",
+                  role: "progressbar",
+                  "aria-label": "Quarterly quota attainment",
+                  "aria-valuemin": 0,
+                  "aria-valuemax": 100,
+                  "aria-valuenow": Math.min(100, attainment),
+                  "aria-valuetext":
+                    money(totals.actual) +
+                    " delivered toward " +
+                    money(quotaPlan.target) +
+                    " quota (" +
+                    attainment.toFixed(1) +
+                    "%)",
+                },
+                h("div", { style: { width: Math.min(100, attainment) + "%" } }),
+              ),
+            ),
+            h(
+              "div",
+              { className: "quota-metric" },
+              h("span", { className: "quota-label" }, "Remaining quota"),
+              h("strong", { className: "quota-gap" }, money(remaining)),
+              h(
+                "p",
+                null,
+                remaining > 0
+                  ? "Gap based on delivered spend"
+                  : "Quota met on delivered spend",
+              ),
+            ),
+            h(
+              "div",
+              { className: "quota-metric" },
+              h(
+                "span",
+                { className: "quota-label" },
+                "Expected finish · Forecast",
+              ),
+              h(
+                "strong",
+                { className: "quota-expected-finish" },
+                money(expectedFinish),
+              ),
+              h(
+                "p",
+                { className: "quota-expected-attainment" },
+                quotaPercent(expectedFinish).toFixed(1) +
+                  "% if forecast delivers",
+              ),
+              h(
+                "p",
+                { className: "quota-forecast-gap" },
+                forecastGap > 0
+                  ? "Forecast gap: " + money(forecastGap)
+                  : "Forecast reaches quota",
+              ),
+            ),
+            h(
+              "div",
+              { className: "quota-metric" },
+              h(
+                "span",
+                { className: "quota-label" },
+                "Open upsell pipeline · This quarter",
+              ),
+              h(
+                "strong",
+                { className: "quota-pipeline" },
+                quotaRange(totals.pipelineLow, totals.pipelineHigh),
+              ),
+              h("p", null, "Unapproved · Excluded from expected finish"),
+            ),
+          ),
+          h(
+            "details",
+            { className: "quota-details" },
+            h("summary", null, "Credit policy & forecast breakdown"),
+            h(
+              "div",
+              { className: "quota-details-body" },
+              h("p", null, quotaPlan.creditPolicy),
+              h(
+                "p",
+                null,
+                "Expected finish = " +
+                  money(totals.actual) +
+                  " delivered + " +
+                  money(totals.expectedAdditional) +
+                  " additional delivery forecast before " +
+                  dateLabel(quotaPlan.end) +
+                  ". Forecast amounts are sample assumptions within approved budgets, not earned credit.",
+              ),
+              h(
+                "p",
+                { className: "quota-future-pipeline" },
+                "Future-test upsell pipeline: " +
+                  quotaRange(totals.futureLow, totals.futureHigh) +
+                  " incremental above current starter budgets. These future tests are excluded from this quarter’s pipeline and forecast.",
+              ),
+              h(
+                "p",
+                null,
+                "Quarter-to-date records include earlier months. Selecting or filtering an account does not change the portfolio quota.",
+              ),
+            ),
+          ),
+        );
+      }
+      function AccountQuota({ account: a }) {
+        const actual = quotaActual(a),
+          additional = quotaRemainingForecast(a),
+          opportunity = quotaOpportunity(a);
+        return h(
+          "div",
+          { className: "account-quota" },
+          h(
+            "div",
+            { className: "account-quota-title" },
+            "Account contribution · " + quotaPlan.name,
+          ),
+          h(
+            "div",
+            { className: "account-quota-grid" },
+            h(
+              "div",
+              null,
+              h("span", null, "Delivered this quarter"),
+              h("strong", { className: "account-quota-actual" }, money(actual)),
+              h("small", null, quotaPercent(actual).toFixed(1) + "% of quota"),
+            ),
+            h(
+              "div",
+              null,
+              h("span", null, "Expected additional this quarter"),
+              h(
+                "strong",
+                { className: "account-quota-forecast" },
+                money(additional),
+              ),
+              h("small", null, "Forecast within approved budget"),
+            ),
+            h(
+              "div",
+              null,
+              h("span", null, "Upsell pipeline · Unapproved"),
+              h(
+                "strong",
+                { className: "account-quota-pipeline" },
+                opportunity.high > 0
+                  ? "+" + quotaRange(opportunity.low, opportunity.high)
+                  : "—",
+              ),
+              h(
+                "small",
+                null,
+                opportunity.scope === "This quarter"
+                  ? "Scoped to this quarter"
+                  : opportunity.scope === "Future test"
+                    ? "Future test; excluded from this quarter"
+                    : "No proposed increase",
+              ),
+            ),
+          ),
+          h(
+            "details",
+            { className: "approval-details" },
+            h("summary", null, "Account forecast basis"),
+            h("p", null, a.quota.forecastReason),
+          ),
+        );
+      }
+
       function BudgetBar({ account: a }) {
         const agreement = a.budgetAgreement;
         const total = approvedBudget(a);
@@ -3079,6 +3647,7 @@
               tile("CPA goal", money(a.cpaGoal), "◎"),
               tile("Campaigns", a.campaigns, "▤"),
             ),
+            h(AccountQuota, { account: a }),
             h(BudgetBar, { account: a }),
             h(SpendOpportunity, { account: a }),
             h(
@@ -3454,6 +4023,7 @@
           h(
             "div",
             { className: "panel-body" },
+            h(AccountQuota, { account: a }),
             h(SpendOpportunity, { account: a }),
             h(
               "div",
@@ -3559,30 +4129,35 @@
         const account = accounts.find((a) => a.id === selectedId);
         return h(
           "div",
-          { className: "app" },
-          h(Sidebar, {
-            selectedId,
-            onSelect: (id) => {
-              setSelectedId(id);
-              setPanel(null);
-            },
-          }),
-          h(Feed, {
-            key: account.id,
-            account,
-            panelKind: panel?.kind,
-            onDraft: (ids) => setPanel({ kind: "plan", ids }),
-            onIntel: () =>
-              setPanel(panel?.kind === "intel" ? null : { kind: "intel" }),
-          }),
-          panel &&
-            (panel.kind === "plan"
-              ? h(PlanPanel, {
-                  account,
-                  ids: panel.ids,
-                  onClose: () => setPanel(null),
-                })
-              : h(ContextPanel, { account, onClose: () => setPanel(null) })),
+          { className: "quota-dashboard" },
+          h(QuotaSummary),
+          h(
+            "div",
+            { className: "app" },
+            h(Sidebar, {
+              selectedId,
+              onSelect: (id) => {
+                setSelectedId(id);
+                setPanel(null);
+              },
+            }),
+            h(Feed, {
+              key: account.id,
+              account,
+              panelKind: panel?.kind,
+              onDraft: (ids) => setPanel({ kind: "plan", ids }),
+              onIntel: () =>
+                setPanel(panel?.kind === "intel" ? null : { kind: "intel" }),
+            }),
+            panel &&
+              (panel.kind === "plan"
+                ? h(PlanPanel, {
+                    account,
+                    ids: panel.ids,
+                    onClose: () => setPanel(null),
+                  })
+                : h(ContextPanel, { account, onClose: () => setPanel(null) })),
+          ),
         );
       }
       ReactDOM.createRoot(document.getElementById("root")).render(h(App));

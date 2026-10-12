@@ -11,12 +11,16 @@ A concept dashboard for an account manager overseeing multiple ChatGPT advertise
 - Explore four newly onboarded accounts with funding announcements, launch and expansion plans, proposed next-test budgets, and account-specific readiness checks.
 - Generate a signal-specific action plan and editable advertiser email, or combine multiple signals into one plan.
 - Review stakeholder priorities, success criteria, and account strategy.
+- Track a sample $400K quarterly quota using separate quarter-to-date delivered-spend records, expected remaining delivery, and unapproved upsell pipeline. Account selection and filters do not change portfolio totals.
+- See each advertiser's quarterly contribution and forecast basis. Proposed next-test budgets are compared with their current starter-budget baseline to show incremental potential, with future-test opportunities kept outside the current-quarter pipeline.
 
 All advertiser records, metrics, and reporting inputs are sample data. This is an independent concept, with no live ChatGPT advertising integration. Email addresses use the reserved `.example` domain; replace them before sending.
 
 Spend-opportunity ranges are illustrative proposals, not approved budgets or performance forecasts. Funding and company-growth signals support discovery; they do not establish available advertising allocation. Newly onboarded accounts label CPA as early and omit monthly projections during their first seven days.
 
 The budget cards use dated sample periods and a sample snapshot of September 18, 2026. Only approved increases effective in the current period are included in the budget denominator. Next-test proposals refer to a separate future period. Budget consumed measures spending rather than campaign success; review CPA and outcome quality alongside it.
+
+The sample quota period is Q3 2026 (July 1–September 30), as of September 18. Credit equals 100% of delivered ad spend on assigned accounts. Approved budgets do not earn credit by themselves. Expected finish adds only estimated remaining-quarter delivery within approved budgets to actual credited spend; open upsells are excluded. Forecast amounts are illustrative account assumptions, not performance predictions or live revenue data.
 
 ## Run it
 
